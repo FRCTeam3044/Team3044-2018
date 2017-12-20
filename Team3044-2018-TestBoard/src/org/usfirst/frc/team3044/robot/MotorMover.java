@@ -10,7 +10,7 @@ public class MotorMover {
 	public CANTalon leftDrive;
 	public CANTalon rightDrive;
 
-	public void MotorMoverInit() {
+	public void motorMoverInit() {
 		leftDrive = comp.leftDrive;
 		rightDrive = comp.rightDrive;
 
@@ -22,9 +22,11 @@ public class MotorMover {
 
 	}
 
-	public void MotorMoverPeriodic() {
+	public void motorMoverPeriodic() {
 		double x1 = -deadband(controller.getLeftX());
 		double x2 = deadband(controller.getRightX());
+
+		tankDrive(x1, x2);
 
 	}
 

@@ -1,5 +1,7 @@
 package org.usfirst.frc.team3044.robot;
 
+import org.usfirst.frc.team3044.Reference.Effectors;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
+	MotorMover motorMover = new MotorMover();
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
 	String autoSelected;
@@ -23,6 +26,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		Effectors.getInstance().init();
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
@@ -62,13 +66,17 @@ public class Robot extends IterativeRobot {
 			break;
 		}
 	}
+	
+	public void teleopInit() {
+		motorMover.motorMoverInit();
+	}
 
 	/**
 	 * This function is called periodically during operator control
 	 */
 	@Override
 	public void teleopPeriodic() {
-		
+		motorMover.motorMoverPeriodic();
 	}
 
 	/**
