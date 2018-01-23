@@ -1,2 +1,2 @@
-# Team3044-2018-TestBoard
-Code for experimenting on the test board we made.  Some things copied from last year.
+# Team3044-2018
+The main repository for FIRST Power Up
