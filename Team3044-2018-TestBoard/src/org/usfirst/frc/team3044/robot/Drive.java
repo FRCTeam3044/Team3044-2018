@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import edu.wpi.first.wpilibj.Talon;
 
-public class MotorMover {
+public class Drive {
 	FirstController controller = FirstController.getInstance();
 	private Effectors comp = Effectors.getInstance();
 	public WPI_TalonSRX leftDrive;

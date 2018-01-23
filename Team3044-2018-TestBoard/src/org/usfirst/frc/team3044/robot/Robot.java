@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	MotorMover motorMover = new MotorMover();
+	Drive drive = new Drive();
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
 	String autoSelected;
@@ -68,7 +68,7 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void teleopInit() {
-		motorMover.motorMoverInit();
+		drive.motorMoverInit();
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		motorMover.motorMoverPeriodic();
+		drive.motorMoverPeriodic();
 	}
 
 	/**
