@@ -6,17 +6,25 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class Effectors {
 
 	private static Effectors instance = null;
 	// Drive
-	public RobotDrive myDrive;
-	public WPI_TalonSRX leftDrive;
-	public WPI_TalonSRX rightDrive;
+	public WPI_TalonSRX leftFrontDrive;
+	public WPI_TalonSRX rightFrontDrive;
+	public WPI_TalonSRX leftBackDrive;
+	public WPI_TalonSRX rightBackDrive;
 
-	//public Solenoid example;
+	SpeedControllerGroup m_left;
+	SpeedControllerGroup m_right;
+
+	public DifferentialDrive myDrive;
+
+	// public Solenoid example;
 
 	private Effectors() {
 	}
@@ -34,9 +42,17 @@ public class Effectors {
 
 		RobotSchema robotSchema = new RobotSchema();
 
-		leftDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftDrive"));
-		rightDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightDrive"));
+		leftFrontDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftFrontDrive"));
+		rightFrontDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightFrontDrive"));
+		leftBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftFrontDrive"));
+		rightBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightFrontDrive"));
 
-		//example = new Solenoid(robotSchema.solenoidMap.get("example").talonID, robotSchema.solenoidMap.get("example").pcmChannel);
+		// TODO: I don't know if this will work, it is spark vs talon.
+		m_left = new SpeedControllerGroup(leftFrontDrive, leftBackDrive);
+		m_right = new SpeedControllerGroup(rightFrontDrive, rightBackDrive);
+
+		myDrive = new DifferentialDrive(m_left, m_right);
+
+		// example = new Solenoid(robotSchema.solenoidMap.get("example").talonID, robotSchema.solenoidMap.get("example").pcmChannel);
 	}
 }

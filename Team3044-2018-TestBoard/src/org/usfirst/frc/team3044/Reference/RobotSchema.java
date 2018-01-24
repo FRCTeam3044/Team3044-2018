@@ -32,9 +32,10 @@ public class RobotSchema {
 		// Device name, CAN Talon ID 
 		
 		// Drive 
-		map.put("leftDrive", 7); 
-		map.put("rightDrive", 10); 
-		
+		map.put("leftFrontDrive", null); 
+		map.put("rightFrontDrive", null); 
+		map.put("leftBackDrive", null); 
+		map.put("rightBackDrive", null); 
 		return map; 
 	}
 	

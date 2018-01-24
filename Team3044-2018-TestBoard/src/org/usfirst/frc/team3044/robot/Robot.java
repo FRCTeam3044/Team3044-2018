@@ -15,8 +15,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	Drive drive = new Drive();
-	final String defaultAuto = "Default";
-	final String customAuto = "My Auto";
+	Elevator elevator = new Elevator();
+	Intake intake= new Intake();
+	final String startCenter = "Start Center";
+	final String startLeft = "Start Left";
+	final String startRight = "Start Right";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 
@@ -27,8 +30,9 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		Effectors.getInstance().init();
-		chooser.addDefault("Default Auto", defaultAuto);
-		chooser.addObject("My Auto", customAuto);
+		chooser.addDefault("Start Center", startCenter);
+		chooser.addObject("Start Left", startLeft);
+		chooser.addObject("Start Right", startRight);
 		SmartDashboard.putData("Auto choices", chooser);
 	}
 
@@ -57,18 +61,25 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		switch (autoSelected) {
-		case customAuto:
-			// Put custom auto code here
-			break;
-		case defaultAuto:
+		case startCenter:
 		default:
 			// Put default auto code here
 			break;
+
+		case startLeft:
+			// Put custom auto code here
+			break;
+
+		case startRight:
+			// Code for starting on the right
+			break;
 		}
 	}
-	
+
 	public void teleopInit() {
-		drive.motorMoverInit();
+		drive.driveInit();
+		elevator.elevatorInit();
+		intake.intakeInit();
 	}
 
 	/**
@@ -76,7 +87,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		drive.motorMoverPeriodic();
+		drive.drivePeriodic();
+		elevator.elevatorPeriodic();
+		intake.intakePeriodic();
 	}
 
 	/**
@@ -86,4 +99,3 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 	}
 }
-
