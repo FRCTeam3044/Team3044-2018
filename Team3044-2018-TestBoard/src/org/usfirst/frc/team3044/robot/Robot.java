@@ -2,6 +2,7 @@ package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.Effectors;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,12 +17,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 	Drive drive = new Drive();
 	Elevator elevator = new Elevator();
-	Intake intake= new Intake();
+	Intake intake = new Intake();
+	
 	final String startCenter = "Start Center";
 	final String startLeft = "Start Left";
 	final String startRight = "Start Right";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
+	
+	String gameData;
+	Boolean mirror = false;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -53,6 +58,8 @@ public class Robot extends IterativeRobot {
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
 		System.out.println("Auto selected: " + autoSelected);
+
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
 
 	/**
@@ -60,18 +67,38 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		//The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
 		switch (autoSelected) {
+
 		case startCenter:
 		default:
-			// Put default auto code here
+			if (gameData.charAt(0) == 'L') {
+				// Put left auto code here
+			} else {
+				// Put right auto code here
+				mirror = true;
+			}
 			break;
 
 		case startLeft:
-			// Put custom auto code here
+			if (gameData.charAt(0) == 'L') {
+				// Put left switch auto code here
+			} else if (gameData.charAt(1) == 'L') {
+				// Put left scale auto code here
+			} else {
+				// Something else, maybe cross field, maybe just auto line.
+			}
 			break;
 
 		case startRight:
-			// Code for starting on the right
+			mirror = true;
+			if (gameData.charAt(0) == 'R') {
+				// Put right switch auto code here
+			} else if (gameData.charAt(1) == 'R') {
+				// Put right scale auto code here
+			} else {
+				// Something else, maybe cross field, maybe just auto line.
+			}
 			break;
 		}
 	}
