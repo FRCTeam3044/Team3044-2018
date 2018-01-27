@@ -1,41 +1,53 @@
 package org.usfirst.frc.team3044.Reference;
 
 import java.util.Map;
-import java.util.HashMap; 
+import java.util.HashMap;
 
 // TODO: Update all talon ID's
 public class RobotSchema {
-	
-	public Map<String,Integer> canTalonMap; 
-	public Map<String,SolenoidDefinition> solenoidMap; 
-	
-	public RobotSchema()
-	{
-		this.canTalonMap=loadCanTalonMap(); 
-		this.solenoidMap=loadSolenoidMap();
+
+	public Map<String, Integer> canTalonMap;
+	public Map<String, SolenoidDefinition> solenoidMap;
+
+	public RobotSchema() {
+		this.canTalonMap = loadCanTalonMap();
+		this.solenoidMap = loadSolenoidMap();
 	}
-	
-	private Map<String,SolenoidDefinition> loadSolenoidMap()
-	{
-		Map<String,SolenoidDefinition> map = new HashMap<String,SolenoidDefinition>(); 
-		
-		//map.put("example", new SolenoidDefinition(61,4)); 
-		
-		return map; 
-		
+
+	private Map<String, SolenoidDefinition> loadSolenoidMap() {
+		Map<String, SolenoidDefinition> map = new HashMap<String, SolenoidDefinition>();
+
+		// map.put("example", new SolenoidDefinition(61,4));
+
+		// Intake
+		map.put("pistonLeft", new SolenoidDefinition(61, -1));
+		map.put("pistonRight", new SolenoidDefinition(61, -1));
+		map.put("retractIntake", new SolenoidDefinition(61, -1));
+
+		return map;
+
 	}
-	
-	private Map<String,Integer> loadCanTalonMap()
-	{
-		Map<String, Integer> map = new HashMap<String,Integer>();
+
+	private Map<String, Integer> loadCanTalonMap() {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+
+		// Device name, CAN Talon ID
+
+		// Drive
+		map.put("leftFrontDrive", null);
+		map.put("rightFrontDrive", null);
+		map.put("leftBackDrive", null);
+		map.put("rightBackDrive", null);
+
+		// Elevator
+		map.put("elevator1", null);
+		map.put("elevator2", null);
 		
-		// Device name, CAN Talon ID 
-		
-		// Drive 
-		map.put("leftDrive", 7); 
-		map.put("rightDrive", 10); 
-		
-		return map; 
+		//Intake
+		map.put("leftSweep", null);
+		map.put("rightSweep", null);
+
+		return map;
 	}
-	
+
 }

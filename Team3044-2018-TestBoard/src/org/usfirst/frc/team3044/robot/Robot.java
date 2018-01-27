@@ -2,6 +2,7 @@ package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.Effectors;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,10 +16,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	Drive drive = new Drive();
-	final String defaultAuto = "Default";
-	final String customAuto = "My Auto";
+	Elevator elevator = new Elevator();
+	Intake intake = new Intake();
+
+	final String startCenter = "Start Center";
+	final String startLeft = "Start Left";
+	final String startRight = "Start Right";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
+
+	String gameData;
+	Boolean mirror = false;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -27,8 +35,9 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		Effectors.getInstance().init();
-		chooser.addDefault("Default Auto", defaultAuto);
-		chooser.addObject("My Auto", customAuto);
+		chooser.addDefault("Start Center", startCenter);
+		chooser.addObject("Start Left", startLeft);
+		chooser.addObject("Start Right", startRight);
 		SmartDashboard.putData("Auto choices", chooser);
 	}
 
@@ -49,6 +58,8 @@ public class Robot extends IterativeRobot {
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
 		System.out.println("Auto selected: " + autoSelected);
+
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
 
 	/**
@@ -56,19 +67,54 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		// The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
 		switch (autoSelected) {
-		case customAuto:
-			// Put custom auto code here
-			break;
-		case defaultAuto:
+
+		case startCenter:
 		default:
-			// Put default auto code here
+			if (gameData.charAt(0) == 'L') {
+				// Left auto code
+				Autonomous.centerSwitch(mirror);
+			} else {
+				// Right auto code
+				mirror = true;
+				Autonomous.centerSwitch(mirror);
+			}
+			break;
+
+		case startLeft:
+			if (gameData.charAt(0) == 'L') {
+				// Left switch auto code
+				Autonomous.sideSwitch(mirror);
+			} else if (gameData.charAt(1) == 'L') {
+				// Left scale auto code
+				Autonomous.sideScale(mirror);
+			} else {
+				// Something else, maybe cross field, maybe just auto line.
+				Autonomous.baseline();
+			}
+			break;
+
+		case startRight:
+			mirror = true;
+			if (gameData.charAt(0) == 'R') {
+				// Right switch auto code
+				Autonomous.sideSwitch(mirror);
+			} else if (gameData.charAt(1) == 'R') {
+				// Right scale auto code
+				Autonomous.sideScale(mirror);
+			} else {
+				// Something else, maybe cross field, maybe just auto line.
+				Autonomous.baseline();
+			}
 			break;
 		}
 	}
-	
+
 	public void teleopInit() {
-		drive.motorMoverInit();
+		drive.driveInit();
+		elevator.elevatorInit();
+		intake.intakeInit();
 	}
 
 	/**
@@ -76,7 +122,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		drive.motorMoverPeriodic();
+		drive.drivePeriodic();
+		elevator.elevatorPeriodic();
+		intake.intakePeriodic();
 	}
 
 	/**
@@ -86,4 +134,3 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 	}
 }
-
