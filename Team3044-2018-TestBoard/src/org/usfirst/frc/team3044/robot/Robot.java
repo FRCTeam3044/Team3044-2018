@@ -18,13 +18,13 @@ public class Robot extends IterativeRobot {
 	Drive drive = new Drive();
 	Elevator elevator = new Elevator();
 	Intake intake = new Intake();
-	
+
 	final String startCenter = "Start Center";
 	final String startLeft = "Start Left";
 	final String startRight = "Start Right";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
-	
+
 	String gameData;
 	Boolean mirror = false;
 
@@ -67,37 +67,45 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		//The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
+		// The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
 		switch (autoSelected) {
 
 		case startCenter:
 		default:
 			if (gameData.charAt(0) == 'L') {
-				// Put left auto code here
+				// Left auto code
+				Autonomous.centerSwitch(mirror);
 			} else {
-				// Put right auto code here
+				// Right auto code
 				mirror = true;
+				Autonomous.centerSwitch(mirror);
 			}
 			break;
 
 		case startLeft:
 			if (gameData.charAt(0) == 'L') {
-				// Put left switch auto code here
+				// Left switch auto code
+				Autonomous.sideSwitch(mirror);
 			} else if (gameData.charAt(1) == 'L') {
-				// Put left scale auto code here
+				// Left scale auto code
+				Autonomous.sideScale(mirror);
 			} else {
 				// Something else, maybe cross field, maybe just auto line.
+				Autonomous.baseline();
 			}
 			break;
 
 		case startRight:
 			mirror = true;
 			if (gameData.charAt(0) == 'R') {
-				// Put right switch auto code here
+				// Right switch auto code
+				Autonomous.sideSwitch(mirror);
 			} else if (gameData.charAt(1) == 'R') {
-				// Put right scale auto code here
+				// Right scale auto code
+				Autonomous.sideScale(mirror);
 			} else {
 				// Something else, maybe cross field, maybe just auto line.
+				Autonomous.baseline();
 			}
 			break;
 		}

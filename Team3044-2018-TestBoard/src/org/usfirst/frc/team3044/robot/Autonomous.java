@@ -3,19 +3,23 @@ package org.usfirst.frc.team3044.robot;
 import org.usfirst.frc.team3044.Reference.*;
 
 public class Autonomous {
+	public static void baseline() {
+		
+	}
 
-	public void centerSwitch(Boolean mirror) {
+	public static void centerSwitch(Boolean mirror) {
 
 	}
 
-	public void sideSwitch(Boolean mirror) {
+	public static void sideSwitch(Boolean mirror) {
 
 	}
 
-	public void sideScale(Boolean mirror) {
+	public static void sideScale(Boolean mirror) {
 
 	}
 
+	
 	/**
 	 * A function for inverting the speed of a turn for autos that are mirror images.
 	 * 

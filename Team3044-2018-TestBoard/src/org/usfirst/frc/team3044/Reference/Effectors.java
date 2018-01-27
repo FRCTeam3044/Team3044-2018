@@ -24,6 +24,15 @@ public class Effectors {
 
 	public DifferentialDrive myDrive;
 
+	// Elevator
+	public WPI_TalonSRX elevator1;
+	public WPI_TalonSRX elevator2;
+
+	// Intake
+	public Solenoid intakeLeft;
+	public Solenoid intakeRight;
+	public Solenoid intakeRetract;
+
 	// public Solenoid example;
 
 	private Effectors() {
@@ -37,11 +46,9 @@ public class Effectors {
 	}
 
 	public void init() {
-
-		// Drive
-
 		RobotSchema robotSchema = new RobotSchema();
 
+		// Drive
 		leftFrontDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftFrontDrive"));
 		rightFrontDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightFrontDrive"));
 		leftBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftFrontDrive"));
@@ -52,6 +59,15 @@ public class Effectors {
 		m_right = new SpeedControllerGroup(rightFrontDrive, rightBackDrive);
 
 		myDrive = new DifferentialDrive(m_left, m_right);
+
+		// Elevator
+		elevator1 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
+		elevator2 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
+
+		// Intake
+		intakeLeft = new Solenoid(robotSchema.canTalonMap.get("inatakeLeft"));
+		intakeRight = new Solenoid(robotSchema.canTalonMap.get("intakeRight"));
+		intakeRetract = new Solenoid(robotSchema.canTalonMap.get("intakeRetract"));
 
 		// example = new Solenoid(robotSchema.solenoidMap.get("example").talonID, robotSchema.solenoidMap.get("example").pcmChannel);
 	}
