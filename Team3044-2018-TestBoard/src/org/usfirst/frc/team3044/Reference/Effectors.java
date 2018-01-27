@@ -29,9 +29,11 @@ public class Effectors {
 	public WPI_TalonSRX elevator2;
 
 	// Intake
-	public Solenoid intakeLeft;
-	public Solenoid intakeRight;
+	public Solenoid pistonLeft;
+	public Solenoid pistonRight;
 	public Solenoid intakeRetract;
+	public WPI_TalonSRX leftSweep;
+	public WPI_TalonSRX rightSweep;
 
 	// public Solenoid example;
 
@@ -65,9 +67,11 @@ public class Effectors {
 		elevator2 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
 
 		// Intake
-		intakeLeft = new Solenoid(robotSchema.canTalonMap.get("inatakeLeft"));
-		intakeRight = new Solenoid(robotSchema.canTalonMap.get("intakeRight"));
-		intakeRetract = new Solenoid(robotSchema.canTalonMap.get("intakeRetract"));
+		pistonLeft = new Solenoid(robotSchema.solenoidMap.get("pistonLeft").talonID, robotSchema.solenoidMap.get("pistonLeft").pcmChannel);
+		pistonRight = new Solenoid(robotSchema.solenoidMap.get("pistonRight").talonID, robotSchema.solenoidMap.get("pistonRight").pcmChannel);
+		intakeRetract = new Solenoid(robotSchema.solenoidMap.get("intakeRetract").talonID, robotSchema.solenoidMap.get("intakeRetract").pcmChannel);
+		leftSweep = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
+		rightSweep = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
 
 		// example = new Solenoid(robotSchema.solenoidMap.get("example").talonID, robotSchema.solenoidMap.get("example").pcmChannel);
 	}

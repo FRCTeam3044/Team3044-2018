@@ -20,8 +20,8 @@ public class RobotSchema {
 		// map.put("example", new SolenoidDefinition(61,4));
 
 		// Intake
-		map.put("leftIntake", new SolenoidDefinition(61, -1));
-		map.put("rightIntake", new SolenoidDefinition(61, -1));
+		map.put("pistonLeft", new SolenoidDefinition(61, -1));
+		map.put("pistonRight", new SolenoidDefinition(61, -1));
 		map.put("retractIntake", new SolenoidDefinition(61, -1));
 
 		return map;
@@ -42,6 +42,10 @@ public class RobotSchema {
 		// Elevator
 		map.put("elevator1", null);
 		map.put("elevator2", null);
+		
+		//Intake
+		map.put("leftSweep", null);
+		map.put("rightSweep", null);
 
 		return map;
 	}
