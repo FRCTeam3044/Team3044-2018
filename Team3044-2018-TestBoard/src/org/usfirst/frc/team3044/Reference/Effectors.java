@@ -2,6 +2,7 @@ package org.usfirst.frc.team3044.Reference;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -23,6 +24,9 @@ public class Effectors {
 	SpeedControllerGroup m_right;
 
 	public DifferentialDrive myDrive;
+	
+	public AnalogInput leftEncoder;
+	public AnalogInput rightEncoder;
 
 	// Elevator
 	public WPI_TalonSRX elevator1;
@@ -31,7 +35,7 @@ public class Effectors {
 	// Intake
 	public Solenoid pistonLeft;
 	public Solenoid pistonRight;
-	public Solenoid intakeRetract;
+	public Solenoid retractIntake;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
 
@@ -53,18 +57,17 @@ public class Effectors {
 		// Drive
 		leftFrontDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftFrontDrive"));
 		rightFrontDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightFrontDrive"));
-		leftBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftFrontDrive"));
-		rightBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightFrontDrive"));
-		/*
-		 * leftBackDrive.setInverted(true);
-		 * rightBackDrive.setInverted(true);
-		 */
+		leftBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftBackDrive"));
+		rightBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightBackDrive"));
 		
-		// TODO: I don't know if this will work, it is spark vs talon.
+		// The SpeedControllerGroup works
 		m_left = new SpeedControllerGroup(leftFrontDrive, leftBackDrive);
 		m_right = new SpeedControllerGroup(rightFrontDrive, rightBackDrive);
 
 		myDrive = new DifferentialDrive(m_left, m_right);
+		
+		leftEncoder = new AnalogInput(1);
+		rightEncoder = new AnalogInput(3);
 
 		// Elevator
 		elevator1 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
@@ -73,7 +76,7 @@ public class Effectors {
 		// Intake
 		pistonLeft = new Solenoid(robotSchema.solenoidMap.get("pistonLeft").talonID, robotSchema.solenoidMap.get("pistonLeft").pcmChannel);
 		pistonRight = new Solenoid(robotSchema.solenoidMap.get("pistonRight").talonID, robotSchema.solenoidMap.get("pistonRight").pcmChannel);
-		intakeRetract = new Solenoid(robotSchema.solenoidMap.get("intakeRetract").talonID, robotSchema.solenoidMap.get("intakeRetract").pcmChannel);
+		retractIntake = new Solenoid(robotSchema.solenoidMap.get("retractIntake").talonID, robotSchema.solenoidMap.get("retractIntake").pcmChannel);
 		leftSweep = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftSweep"));
 		rightSweep = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightSweep"));
 

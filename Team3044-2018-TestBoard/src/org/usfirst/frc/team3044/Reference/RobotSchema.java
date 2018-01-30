@@ -20,9 +20,9 @@ public class RobotSchema {
 		// map.put("example", new SolenoidDefinition(61,4));
 
 		// Intake
-		map.put("pistonLeft", new SolenoidDefinition(61, -1));
-		map.put("pistonRight", new SolenoidDefinition(61, -1));
-		map.put("retractIntake", new SolenoidDefinition(61, -1));
+		map.put("pistonLeft", new SolenoidDefinition(61, 1));
+		map.put("pistonRight", new SolenoidDefinition(61, 2));
+		map.put("retractIntake", new SolenoidDefinition(61, 3));
 
 		return map;
 
@@ -34,18 +34,18 @@ public class RobotSchema {
 		// Device name, CAN Talon ID
 
 		// Drive
-		map.put("leftFrontDrive", null);
-		map.put("rightFrontDrive", null);
-		map.put("leftBackDrive", null);
-		map.put("rightBackDrive", null);
+		map.put("leftFrontDrive", 1);
+		map.put("rightFrontDrive", 3);
+		map.put("leftBackDrive", 2);
+		map.put("rightBackDrive", 4);
 
 		// Elevator
-		map.put("elevator1", null);
-		map.put("elevator2", null);
+		map.put("elevator1", 5);
+		map.put("elevator2", 6);
 		
 		//Intake
-		map.put("leftSweep", null);
-		map.put("rightSweep", null);
+		map.put("leftSweep", 7);
+		map.put("rightSweep", 8);
 
 		return map;
 	}
