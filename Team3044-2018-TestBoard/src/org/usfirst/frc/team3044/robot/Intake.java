@@ -16,7 +16,7 @@ public class Intake {
 	SecondController controller = SecondController.getInstance();
 	public Solenoid pistonLeft;
 	public Solenoid pistonRight;
-	public Solenoid intakeRetract;
+	public Solenoid retractIntake;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
 	private Effectors comp = Effectors.getInstance();
@@ -26,7 +26,7 @@ public class Intake {
 		rightSweep = comp.rightSweep;
 		pistonLeft = comp.pistonLeft;
 		pistonRight = comp.pistonRight;
-		intakeRetract = comp.intakeRetract;
+		retractIntake = comp.retractIntake;
 		
 	}
 	public void intakePeriodic() {
@@ -42,10 +42,10 @@ public class Intake {
 			pistonRight.set(false);
 		}
 		if (controller.getDPadUp()) {
-			intakeRetract.set(false);
+			retractIntake.set(false);
 		}
 		if (controller.getDPadDown()) {
-			intakeRetract.set(true);
+			retractIntake.set(true);
 		}
 	}
 }
