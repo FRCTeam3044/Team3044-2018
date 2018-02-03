@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class Intake {
 	
+	//calls on second controller from Second Cotroller and the solenoids and talons form Effectors 
 	SecondController controller = SecondController.getInstance();
 	public Solenoid pistonLeft;
 	public Solenoid pistonRight;
@@ -30,20 +31,26 @@ public class Intake {
 		
 	}
 	public void intakePeriodic() {
+		
+		//sets power to the sweeper motors based on input value of the Y value on the left stick
 		double y1 = controller.getLeftY();
 		leftSweep.set(y1);
 		rightSweep.set(-y1);
+		//opens inatke when the left of the d-pad is activated 
 		if (controller.getDPadLeft()) {
 			pistonLeft.set(true);
 			pistonRight.set(true);
 		}
+		//closes intake when the right of the d-pad is activated 
 		if (controller.getDPadRight()) {
 			pistonLeft.set(false);
 			pistonRight.set(false);
 		}
+		//pulls the intake up when the top of the d-pad is activated 
 		if (controller.getDPadUp()) {
 			retractIntake.set(false);
 		}
+		//drops the intake down whent he bottom of the d-pad is acitvated 
 		if (controller.getDPadDown()) {
 			retractIntake.set(true);
 		}

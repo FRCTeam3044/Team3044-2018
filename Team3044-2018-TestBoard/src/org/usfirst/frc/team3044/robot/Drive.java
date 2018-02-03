@@ -1,3 +1,6 @@
+/*Contains the code used in the drive motors. 
+ *Calls from FirstController for the inputs and Effectors fro the outputs.
+ */
 package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.*;
@@ -22,8 +25,10 @@ public class Drive {
 	int rightBits;
 
 	public void driveInit() {
+		//calls on the WPI lib tank drive from Effectors 
 		myDrive = comp.myDrive;
 		
+		//calls on the encoders from Effectors 
 		leftEncoder = comp.leftEncoder;
 		rightEncoder = comp.rightEncoder;
 		leftEncoder.setAverageBits(2);
@@ -33,14 +38,18 @@ public class Drive {
 	}
 
 	public void drivePeriodic() {
+		//names and defines values used to read the input from the joystick of the first controller 
 		double y1 = firstController.getLeftY(); // Shouldn't be here
 		double y2 = firstController.getRightY();
 
+		//uses values from the joysticks to run tank drive 
 		builtInDrive(-y1, -y2);
 		
+		//pulls values from the encoders from Effectors 
 		leftBits = leftEncoder.getAverageBits();
 		rightBits = rightEncoder.getAverageBits();
 		
+		//displays values from the encoders 
 		SmartDashboard.putString("DB/String 0", "leftBits: " + String.valueOf(leftBits));
 		SmartDashboard.putString("DB/String 1", "rightBits: " + String.valueOf(rightBits));
 
@@ -51,6 +60,7 @@ public class Drive {
 	}
 
 	public void builtInDrive(double y1, double y2) {
+		//sets power to the motor groups from Effectors based on th input values from the sticks 
 		myDrive.tankDrive(y1, y2, true);
 	}
 }
