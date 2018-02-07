@@ -117,7 +117,7 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	@Override
-	// runs subsystems
+	// Runs subsystems
 	public void teleopPeriodic() {
 		drive.drivePeriodic();
 		elevator.elevatorPeriodic();
