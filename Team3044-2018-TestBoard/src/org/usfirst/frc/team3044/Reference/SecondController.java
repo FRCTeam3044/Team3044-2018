@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj.Joystick;
 public class SecondController {
 	public static SecondController instance = null;
 
-	// names second controller as secondJoy
+	// Names second controller as secondJoy.
 	public Joystick secondJoy;
 
-	// assigns names to predetermined values that are the buttons and bumpers of the second controller.
+	// Assigns names to predetermined values that are the buttons and bumpers of the second controller.
 	public static int BUTTON_X = 3;
 	public static int BUTTON_Y = 4;
 	public static int BUTTON_B = 2;
