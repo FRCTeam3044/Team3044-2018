@@ -17,7 +17,7 @@ public class Intake {
 	SecondController controller = SecondController.getInstance();
 	public Solenoid pistonLeft;
 	public Solenoid pistonRight;
-	public Solenoid retractIntake;
+	public WPI_TalonSRX retractIntake;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
 	private Effectors comp = Effectors.getInstance();
@@ -48,11 +48,11 @@ public class Intake {
 		}
 		//pulls the intake up when the top of the d-pad is activated 
 		if (controller.getDPadUp()) {
-			retractIntake.set(false);
+			retractIntake.set(-0.5);
 		}
 		//drops the intake down whent he bottom of the d-pad is acitvated 
 		if (controller.getDPadDown()) {
-			retractIntake.set(true);
+			retractIntake.set(0.5);
 		}
 	}
 }

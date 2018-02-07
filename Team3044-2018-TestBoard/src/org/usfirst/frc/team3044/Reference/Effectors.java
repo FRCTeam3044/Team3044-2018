@@ -42,7 +42,7 @@ public class Effectors {
 	// Intake
 	public Solenoid pistonLeft;
 	public Solenoid pistonRight;
-	public Solenoid retractIntake;
+	public WPI_TalonSRX retractIntake;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
 
@@ -82,10 +82,10 @@ public class Effectors {
 		elevator1 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
 		elevator2 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator2"));
 
-		// Sets talons for the solenoids used to open, close and pull in the intake 
+		// Sets talons and solenoids used to open, close and pull in the intake 
 		pistonLeft = new Solenoid(robotSchema.solenoidMap.get("pistonLeft").talonID, robotSchema.solenoidMap.get("pistonLeft").pcmChannel);
 		pistonRight = new Solenoid(robotSchema.solenoidMap.get("pistonRight").talonID, robotSchema.solenoidMap.get("pistonRight").pcmChannel);
-		retractIntake = new Solenoid(robotSchema.solenoidMap.get("retractIntake").talonID, robotSchema.solenoidMap.get("retractIntake").pcmChannel);
+		retractIntake = new WPI_TalonSRX(robotSchema.canTalonMap.get("retractIntake"));
 		
 		// Sets talons for motors used in intake system
 		leftSweep = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftSweep"));

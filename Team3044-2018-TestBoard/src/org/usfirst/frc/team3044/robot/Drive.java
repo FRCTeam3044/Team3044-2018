@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
 public class Drive {
 	FirstController firstController = FirstController.getInstance();
@@ -21,6 +23,10 @@ public class Drive {
 	DifferentialDrive myDrive;
 	AnalogInput leftEncoder;
 	AnalogInput rightEncoder;
+	SpeedControllerGroup m_left;
+	SpeedControllerGroup m_right;
+	PIDController leftPID;
+	PIDController rightPID;
 	int leftBits;
 	int rightBits;
 
@@ -33,8 +39,10 @@ public class Drive {
 		rightEncoder = comp.rightEncoder;
 		leftEncoder.setAverageBits(2);
 		rightEncoder.setAverageBits(2);
-		
-
+    
+    //Sets up the PID Loop
+		leftPID = new PIDController(1, 1, 1, leftEncoder, m_left, 50);
+		rightPID = new PIDController(1, 1, 1, rightEncoder, m_right, 50);
 	}
 
 	public void drivePeriodic() {
@@ -60,7 +68,12 @@ public class Drive {
 	}
 
 	public void builtInDrive(double y1, double y2) {
-		//sets power to the motor groups from Effectors based on th input values from the sticks 
+		//This should be all we need to move the robot using PID
+		//leftPID.setSetpoint(y1);
+		//rightPID.setSetpoint(y2);
+		
+		//If not, we'll need to use this
+		//sets power to the motor groups from Effectors based on the input values from the sticks 
 		myDrive.tankDrive(y1, y2, true);
 	}
 }
