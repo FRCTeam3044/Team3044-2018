@@ -22,7 +22,6 @@ public class RobotSchema {
 		// Intake
 		map.put("pistonLeft", new SolenoidDefinition(61, 1));
 		map.put("pistonRight", new SolenoidDefinition(61, 2));
-		map.put("retractIntake", new SolenoidDefinition(61, 3));
 
 		return map;
 
@@ -46,6 +45,7 @@ public class RobotSchema {
 		//Intake
 		map.put("leftSweep", 7);
 		map.put("rightSweep", 8);
+		map.put("retractIntake", 9);
 
 		return map;
 	}

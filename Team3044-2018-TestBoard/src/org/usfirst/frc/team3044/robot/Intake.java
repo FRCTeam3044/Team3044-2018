@@ -16,7 +16,7 @@ public class Intake {
 	SecondController controller = SecondController.getInstance();
 	public Solenoid pistonLeft;
 	public Solenoid pistonRight;
-	public Solenoid retractIntake;
+	public WPI_TalonSRX retractIntake;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
 	private Effectors comp = Effectors.getInstance();
@@ -42,10 +42,10 @@ public class Intake {
 			pistonRight.set(false);
 		}
 		if (controller.getDPadUp()) {
-			retractIntake.set(false);
+			retractIntake.set(-0.5);
 		}
 		if (controller.getDPadDown()) {
-			retractIntake.set(true);
+			retractIntake.set(0.5);
 		}
 	}
 }
