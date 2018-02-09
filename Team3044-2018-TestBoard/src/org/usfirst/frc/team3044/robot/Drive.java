@@ -1,16 +1,12 @@
-/*Contains the code used in the drive motors. 
- *Calls from FirstController for the inputs and Effectors fro the outputs.
+/*Code for driving the robot. 
+ *Calls from FirstController for the inputs and Effectors for the outputs.
  */
 package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.*;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -19,45 +15,47 @@ public class Drive {
 	FirstController firstController = FirstController.getInstance();
 	SecondController secondController = SecondController.getInstance();
 	private Effectors comp = Effectors.getInstance();
-	DigitalInput limitSwitchOut = new DigitalInput(6); // Needs to be in reference package
+	
 	DifferentialDrive myDrive;
-	AnalogInput leftEncoder;
-	AnalogInput rightEncoder;
 	SpeedControllerGroup m_left;
 	SpeedControllerGroup m_right;
-	PIDController leftPID;
-	PIDController rightPID;
+	
+	AnalogInput leftEncoder;
+	AnalogInput rightEncoder;
 	int leftBits;
 	int rightBits;
+	
+	PIDController leftPID;
+	PIDController rightPID;
 
 	public void driveInit() {
-		//calls on the WPI lib tank drive from Effectors 
+		// Calls on the WPIlib DifferentialDrive from Effectors.
 		myDrive = comp.myDrive;
-		
-		//calls on the encoders from Effectors 
+
+		// Calls on the encoders from Effectors.
 		leftEncoder = comp.leftEncoder;
 		rightEncoder = comp.rightEncoder;
 		leftEncoder.setAverageBits(2);
 		rightEncoder.setAverageBits(2);
-    
-    //Sets up the PID Loop
+
+		// Sets up the PID Loop.
 		leftPID = new PIDController(1, 1, 1, leftEncoder, m_left, 50);
 		rightPID = new PIDController(1, 1, 1, rightEncoder, m_right, 50);
 	}
 
 	public void drivePeriodic() {
-		//names and defines values used to read the input from the joystick of the first controller 
+		// Names and defines values used to read the input from the joysticks of the first controller.
 		double y1 = firstController.getLeftY(); // Shouldn't be here
 		double y2 = firstController.getRightY();
 
-		//uses values from the joysticks to run tank drive 
+		// Calls the function that runs the tank drive and uses values from the joysticks.
 		builtInDrive(-y1, -y2);
-		
-		//pulls values from the encoders from Effectors 
+
+		// Pulls values from the encoders from Effectors.
 		leftBits = leftEncoder.getAverageBits();
 		rightBits = rightEncoder.getAverageBits();
-		
-		//displays values from the encoders 
+
+		// Displays values from the encoders.
 		SmartDashboard.putString("DB/String 0", "leftBits: " + String.valueOf(leftBits));
 		SmartDashboard.putString("DB/String 1", "rightBits: " + String.valueOf(rightBits));
 
@@ -68,12 +66,12 @@ public class Drive {
 	}
 
 	public void builtInDrive(double y1, double y2) {
-		//This should be all we need to move the robot using PID
-		//leftPID.setSetpoint(y1);
-		//rightPID.setSetpoint(y2);
-		
-		//If not, we'll need to use this
-		//sets power to the motor groups from Effectors based on the input values from the sticks 
+		// This should be all we need to move the robot using PID.
+		// leftPID.setSetpoint(y1);
+		// rightPID.setSetpoint(y2);
+
+		// If not, we'll need to use this.
+		// Sets power to the motor groups from Effectors based on the input values from the sticks.
 		myDrive.tankDrive(y1, y2, true);
 	}
 }
