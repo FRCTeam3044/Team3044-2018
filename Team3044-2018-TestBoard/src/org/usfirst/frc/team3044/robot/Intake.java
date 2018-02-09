@@ -1,6 +1,7 @@
 /**Garrett
  * 1-27-18
  * Team 3044
+ * This controls the intake: it will take the block in and out, open and close the intake arms, and move the wrist up and down.
  */
 
 package org.usfirst.frc.team3044.robot;
@@ -35,8 +36,22 @@ public class Intake {
 
 		// Sets power to the sweeper motors based on input value of the Y value on the left stick.
 		double y1 = controller.getLeftY();
-		leftSweep.set(y1);
-		rightSweep.set(-y1);
+
+		// Calls functions that take the block in and out, open and close the intake arms, and move the wrist up and down.
+		intakeWheels(y1);
+		intakeGrab();
+		wristMovement();
+
+	}
+
+	// Function to take the block in and out.
+	void intakeWheels(double speed) {
+		leftSweep.set(speed);
+		rightSweep.set(-speed);
+	}
+
+	// Function to open and close the intake arms.
+	void intakeGrab() {
 		// Opens intake when the left of the d-pad is activated.
 		if (controller.getDPadLeft()) {
 			pistonLeft.set(true);
@@ -47,6 +62,10 @@ public class Intake {
 			pistonLeft.set(false);
 			pistonRight.set(false);
 		}
+	}
+
+	// Function to move the wrist up and down.
+	void wristMovement() {
 		// Pulls the intake up when the top of the d-pad is activated.
 		if (controller.getDPadUp()) {
 			wristMotor.set(-0.5);

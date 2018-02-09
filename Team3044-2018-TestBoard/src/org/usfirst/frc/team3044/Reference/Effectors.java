@@ -7,6 +7,7 @@ package org.usfirst.frc.team3044.Reference;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -30,6 +31,8 @@ public class Effectors {
 	// Encoders
 	public AnalogInput leftEncoder;
 	public AnalogInput rightEncoder;
+	public Encoder elevatorEncoder;
+	public Encoder wristEncoder;
 
 	// Elevator
 	public WPI_TalonSRX elevator1;
@@ -71,6 +74,8 @@ public class Effectors {
 		// Defines encoder inputs
 		leftEncoder = new AnalogInput(1);
 		rightEncoder = new AnalogInput(0);
+		elevatorEncoder = new Encoder(null, null, false, Encoder.EncodingType.k4X);
+		wristEncoder = new Encoder(null, null, false, Encoder.EncodingType.k4X);
 
 		// Sets talons for elevator motors
 		elevator1 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
