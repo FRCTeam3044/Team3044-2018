@@ -5,13 +5,16 @@ import java.io.FileInputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 
-// TODO: Update all talon ID's
+// TODO: Update all talon ID's.
 public class RobotSchema {
 
+	// Creates Talon and Solenoid maps.
 	public Map<String, Integer> canTalonMap;
 	public Map<String, SolenoidDefinition> solenoidMap;
 
 	public RobotSchema() {
+
+		// Attaches definition to the previously named maps.
 		this.canTalonMap = loadCanTalonMap();
 		this.solenoidMap = loadSolenoidMap();
 	}
@@ -24,8 +27,7 @@ public class RobotSchema {
 		// Intake
 		map.put("pistonLeft", new SolenoidDefinition(61, 1));
 		map.put("pistonRight", new SolenoidDefinition(61, 2));
-		map.put("retractIntake", new SolenoidDefinition(61, 3));
-		
+
 		return map;
 
 	}
@@ -133,10 +135,11 @@ public class RobotSchema {
 		// Elevator
 		map.put("elevator1", 5);
 		map.put("elevator2", 6);
-		
-		//Intake
+
+		// Intake
 		map.put("leftSweep", 7);
 		map.put("rightSweep", 8);
+		map.put("wristMotor", 9);
 
 		return map;
 	}
