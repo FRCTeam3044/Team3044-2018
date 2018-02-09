@@ -19,6 +19,7 @@ public class Robot extends IterativeRobot {
 	Elevator elevator = new Elevator();
 	Intake intake = new Intake();
 
+	//creates new strings for where the robot starts 
 	final String startCenter = "Start Center";
 	final String startLeft = "Start Left";
 	final String startRight = "Start Right";
@@ -34,6 +35,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		//pulls from effectors and reads the chooser to see where the robot started 
 		Effectors.getInstance().init();
 		chooser.addDefault("Start Center", startCenter);
 		chooser.addObject("Start Left", startLeft);
@@ -54,6 +56,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		//prints when the autonomous mode has been selected
 		autoSelected = chooser.getSelected();
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
@@ -70,6 +73,7 @@ public class Robot extends IterativeRobot {
 		// The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
 		switch (autoSelected) {
 
+		//sets which autonomous is going to run based on the strings made previously 
 		case startCenter:
 		default:
 			if (gameData.charAt(0) == 'L') {
@@ -110,7 +114,7 @@ public class Robot extends IterativeRobot {
 			break;
 		}
 	}
-
+	//initiallizes subsystems 
 	public void teleopInit() {
 		drive.driveInit();
 		elevator.elevatorInit();
@@ -121,6 +125,7 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	@Override
+	//runs subsystems 
 	public void teleopPeriodic() {
 		drive.drivePeriodic();
 		elevator.elevatorPeriodic();

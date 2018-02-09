@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Elevator {
 	
+	//calls on second controller from SecondController and on talons for the elvator from Effectors 
 	SecondController controller = SecondController.getInstance();
 	public WPI_TalonSRX elevator1;
 	public WPI_TalonSRX elevator2;
@@ -23,12 +24,15 @@ public class Elevator {
 	}
 	
 	public void elevatorPeriodic() {
+		//raises elevator up when Y button is pressed 
 		if (controller.getRawButton(controller.BUTTON_Y)) {
 			elevator1.set(0.5);
 			elevator2.set(-0.5);
+		//lowers elevator when the A button is pressed if the Y button is not being pressed 
 		} else if (controller.getRawButton(controller.BUTTON_A)) {
 			elevator1.set(-0.5);
 			elevator2.set(0.5);
+		//turns off all power to elevator motors if neither button is pressed 
 		} else {
 			elevator1.set(0);
 			elevator2.set(0);

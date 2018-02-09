@@ -6,10 +6,13 @@ import java.util.HashMap;
 // TODO: Update all talon ID's
 public class RobotSchema {
 
+	// Creates Talon and Solenoid maps 
 	public Map<String, Integer> canTalonMap;
 	public Map<String, SolenoidDefinition> solenoidMap;
 
 	public RobotSchema() {
+		
+		// Attaches defenition to the previously named maps 
 		this.canTalonMap = loadCanTalonMap();
 		this.solenoidMap = loadSolenoidMap();
 	}
