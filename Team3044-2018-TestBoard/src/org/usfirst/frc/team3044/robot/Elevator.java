@@ -57,11 +57,9 @@ public class Elevator {
 	
 	private void brakeElevator() {
 		//Activates the brake if the B button is pressesd, disengages it otherwise.
-		if (toggle == true) {
-			toggle = false;
-		} else {
-			toggle = true;
-		}
+		if (controller.getRawButton(controller.BUTTON_B)) {
+			toggle = !toggle;
+		} 
 		
 		elevatorBrake.set(toggle);
 	}
