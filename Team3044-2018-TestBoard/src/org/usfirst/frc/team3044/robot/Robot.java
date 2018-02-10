@@ -7,26 +7,22 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the manifest file in the resource
- * directory.
- */
 public class Robot extends IterativeRobot {
 	Drive drive = new Drive();
 	Elevator elevator = new Elevator();
 	Intake intake = new Intake();
 
-	//creates new strings for where the robot starts 
+	// Creates variables for autonomous selection.
 	final String startCenter = "Start Center";
 	final String startLeft = "Start Left";
 	final String startRight = "Start Right";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 
+	// Data from the FMS about switch and scale placement.
 	String gameData;
+
+	// Assumes the robot always starts/goes left in auto, changes to true if right side.
 	Boolean mirror = false;
 
 	/**
@@ -35,33 +31,24 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		//pulls from effectors and reads the chooser to see where the robot started 
+		// Initializes effectors.
 		Effectors.getInstance().init();
+
+		// Sends the auto choices to the dashboard.
 		chooser.addDefault("Start Center", startCenter);
 		chooser.addObject("Start Left", startLeft);
 		chooser.addObject("Start Right", startRight);
 		SmartDashboard.putData("Auto choices", chooser);
 	}
 
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select
-	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * getString line to get the auto name from the text box below the Gyro
-	 *
-	 * You can add additional auto modes by adding additional comparisons to the
-	 * switch structure below with additional strings. If using the
-	 * SendableChooser make sure to add them to the chooser code above as well.
-	 */
 	@Override
 	public void autonomousInit() {
-		//prints when the autonomous mode has been selected
+		// Gets the autonomous mode that has been selected.
 		autoSelected = chooser.getSelected();
-		// autoSelected = SmartDashboard.getString("Auto Selector",
-		// defaultAuto);
+
 		System.out.println("Auto selected: " + autoSelected);
 
+		// Gets the string that has the position of switch and scale.
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
 
@@ -71,9 +58,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		// The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
+
+		/*
+		 * This switch statement contains all the autonomous options. The case ran depends on which auto was chosen by the drivers.
+		 * Within each case, the game data is used to determine exactly which auto is run.
+		 */
 		switch (autoSelected) {
 
-		//sets which autonomous is going to run based on the strings made previously 
 		case startCenter:
 		default:
 			if (gameData.charAt(0) == 'L') {
@@ -114,7 +105,8 @@ public class Robot extends IterativeRobot {
 			break;
 		}
 	}
-	//initiallizes subsystems 
+
+	// Initializes subsystems.
 	public void teleopInit() {
 		drive.driveInit();
 		elevator.elevatorInit();
@@ -125,7 +117,7 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	@Override
-	//runs subsystems 
+	// Runs subsystems
 	public void teleopPeriodic() {
 		drive.drivePeriodic();
 		elevator.elevatorPeriodic();

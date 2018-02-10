@@ -1,6 +1,7 @@
 /**Garrett
  * 1-27-18
- * team 3044
+ * Team 3044
+ * This controls the intake: it will take the block in and out, open and close the intake arms, and move the wrist up and down.
  */
 
 package org.usfirst.frc.team3044.robot;
@@ -12,47 +13,66 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Intake {
-	
-	//calls on second controller from Second Cotroller and the solenoids and talons form Effectors 
+
+	// Calls on second controller from Second Controller and the solenoids and talons form Effectors.
 	SecondController controller = SecondController.getInstance();
 	public Solenoid pistonLeft;
 	public Solenoid pistonRight;
-	public WPI_TalonSRX retractIntake;
+	public WPI_TalonSRX wristMotor;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
 	private Effectors comp = Effectors.getInstance();
-	
+
 	public void intakeInit() {
 		leftSweep = comp.leftSweep;
 		rightSweep = comp.rightSweep;
 		pistonLeft = comp.pistonLeft;
 		pistonRight = comp.pistonRight;
-		retractIntake = comp.retractIntake;
-		
+		wristMotor = comp.wristMotor;
+
 	}
+
 	public void intakePeriodic() {
-		
-		//sets power to the sweeper motors based on input value of the Y value on the left stick
+
+		// Sets power to the sweeper motors based on input value of the Y value on the left stick.
 		double y1 = controller.getLeftY();
-		leftSweep.set(y1);
-		rightSweep.set(-y1);
-		//opens inatke when the left of the d-pad is activated 
+
+		// Calls functions that take the block in and out, open and close the intake arms, and move the wrist up and down.
+		intakeWheels(y1);
+		intakeGrab();
+		wristMovement();
+
+	}
+
+	// Function to take the block in and out.
+	void intakeWheels(double speed) {
+		leftSweep.set(speed);
+		rightSweep.set(-speed);
+	}
+
+	// Function to open and close the intake arms.
+	void intakeGrab() {
+		// Opens intake when the left of the d-pad is activated.
 		if (controller.getDPadLeft()) {
 			pistonLeft.set(true);
 			pistonRight.set(true);
 		}
-		//closes intake when the right of the d-pad is activated 
+		// Closes intake when the right of the d-pad is activated.
 		if (controller.getDPadRight()) {
 			pistonLeft.set(false);
 			pistonRight.set(false);
 		}
-		//pulls the intake up when the top of the d-pad is activated 
+	}
+
+	// Function to move the wrist up and down.
+	void wristMovement() {
+		// Pulls the intake up when the top of the d-pad is activated.
 		if (controller.getDPadUp()) {
-			retractIntake.set(-0.5);
+			wristMotor.set(-0.5);
 		}
-		//drops the intake down whent he bottom of the d-pad is acitvated 
+		// Drops the intake down when he bottom of the d-pad is activated.
 		if (controller.getDPadDown()) {
-			retractIntake.set(0.5);
+			wristMotor.set(0.5);
 		}
 	}
 }
