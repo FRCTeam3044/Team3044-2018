@@ -10,20 +10,29 @@ import org.usfirst.frc.team3044.Reference.*;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.Solenoid;
+
 public class Elevator {
 	
 	//calls on second controller from SecondController and on talons for the elvator from Effectors 
 	SecondController controller = SecondController.getInstance();
 	public WPI_TalonSRX elevator1;
 	public WPI_TalonSRX elevator2;
+	public Solenoid elevatorBrake;
 	private Effectors comp = Effectors.getInstance();
 	
 	public void elevatorInit() {
 		elevator1 = comp.elevator1;
 		elevator2 = comp.elevator2;
+		elevatorBrake = comp.elevatorBrake;
 	}
 	
 	public void elevatorPeriodic() {
+		moveElevator();
+		brakeElevator();
+	}
+	
+	private void moveElevator() {
 		//raises elevator up when Y button is pressed 
 		if (controller.getRawButton(controller.BUTTON_Y)) {
 			elevator1.set(0.5);
@@ -36,6 +45,15 @@ public class Elevator {
 		} else {
 			elevator1.set(0);
 			elevator2.set(0);
+		}	
+	}
+	
+	private void brakeElevator() {
+		//Activates the brake if the B button is pressesd, disengages it otherwise.
+		if (controller.getRawButton(controller.BUTTON_B)) {
+			elevatorBrake.set(true);
+		} else {
+			elevatorBrake.set(false);
 		}
 	}
 }
