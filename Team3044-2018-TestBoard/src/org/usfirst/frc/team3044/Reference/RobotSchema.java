@@ -3,16 +3,16 @@ package org.usfirst.frc.team3044.Reference;
 import java.util.Map;
 import java.util.HashMap;
 
-// TODO: Update all talon ID's
+// TODO: Update all talon ID's.
 public class RobotSchema {
 
-	// Creates Talon and Solenoid maps 
+	// Creates Talon and Solenoid maps.
 	public Map<String, Integer> canTalonMap;
 	public Map<String, SolenoidDefinition> solenoidMap;
 
 	public RobotSchema() {
-		
-		// Attaches defenition to the previously named maps 
+
+		// Attaches definition to the previously named maps.
 		this.canTalonMap = loadCanTalonMap();
 		this.solenoidMap = loadSolenoidMap();
 	}
@@ -25,6 +25,8 @@ public class RobotSchema {
 		// Intake
 		map.put("pistonLeft", new SolenoidDefinition(61, 1));
 		map.put("pistonRight", new SolenoidDefinition(61, 2));
+		map.put("elevatorBrake", new SolenoidDefinition(61, 3));
+
 
 		return map;
 
@@ -44,11 +46,11 @@ public class RobotSchema {
 		// Elevator
 		map.put("elevator1", 5);
 		map.put("elevator2", 6);
-		
-		//Intake
+
+		// Intake
 		map.put("leftSweep", 7);
 		map.put("rightSweep", 8);
-		map.put("retractIntake", 9);
+		map.put("wristMotor", 9);
 
 		return map;
 	}
