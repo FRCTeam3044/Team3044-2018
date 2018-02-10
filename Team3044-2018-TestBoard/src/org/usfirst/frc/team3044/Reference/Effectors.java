@@ -6,6 +6,7 @@
 package org.usfirst.frc.team3044.Reference;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
@@ -16,6 +17,10 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class Effectors {
+
+	public DigitalOutput R = new DigitalOutput(0);
+
+	
 
 	private static Effectors instance = null;
 	// Drive

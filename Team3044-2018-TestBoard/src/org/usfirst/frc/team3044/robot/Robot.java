@@ -18,7 +18,7 @@ public class Robot extends IterativeRobot {
 	Drive drive = new Drive();
 	Elevator elevator = new Elevator();
 	Intake intake = new Intake();
-
+	Arduino arduino = new Arduino();
 	//creates new strings for where the robot starts 
 	final String startCenter = "Start Center";
 	final String startLeft = "Start Left";
@@ -119,6 +119,7 @@ public class Robot extends IterativeRobot {
 		drive.driveInit();
 		elevator.elevatorInit();
 		intake.intakeInit();
+		arduino.arduinoInit();
 	}
 
 	/**
