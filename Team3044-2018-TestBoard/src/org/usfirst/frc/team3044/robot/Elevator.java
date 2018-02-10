@@ -20,11 +20,13 @@ public class Elevator {
 	public WPI_TalonSRX elevator2;
 	public Solenoid elevatorBrake;
 	private Effectors comp = Effectors.getInstance();
+	private boolean toggle;
 
 	public void elevatorInit() {
 		elevator1 = comp.elevator1;
 		elevator2 = comp.elevator2;
 		elevatorBrake = comp.elevatorBrake;
+		toggle = false;
 	}
 
 	public void elevatorPeriodic() {
@@ -52,10 +54,12 @@ public class Elevator {
 	
 	private void brakeElevator() {
 		//Activates the brake if the B button is pressesd, disengages it otherwise.
-		if (controller.getRawButton(controller.BUTTON_B)) {
-			elevatorBrake.set(true);
+		if (toggle == true) {
+			toggle = false;
 		} else {
-			elevatorBrake.set(false);
+			toggle = true;
 		}
+		
+		elevatorBrake.set(toggle);
 	}
 }
