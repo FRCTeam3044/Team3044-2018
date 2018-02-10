@@ -35,8 +35,11 @@ public class Elevator {
 	}
 	
 	private void moveElevator() {
-		// Raises elevator up when Y button is pressed.
-		if (controller.getRawButton(controller.BUTTON_Y)) {
+		if (toggle == true) {
+			elevator1.set(0);
+			elevator2.set(0);
+			// Raises elevator up when Y button is pressed.
+		} else if (controller.getRawButton(controller.BUTTON_Y)) {
 			elevator1.set(0.5);
 			elevator2.set(-0.5);
 
