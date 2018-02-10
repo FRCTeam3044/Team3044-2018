@@ -37,6 +37,7 @@ public class Effectors {
 	// Elevator
 	public WPI_TalonSRX elevator1;
 	public WPI_TalonSRX elevator2;
+	public Solenoid elevatorBrake;
 
 	// Intake
 	public Solenoid pistonLeft;
@@ -80,6 +81,7 @@ public class Effectors {
 		// Sets talons for elevator motors
 		elevator1 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
 		elevator2 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator2"));
+		elevatorBrake = new Solenoid(robotSchema.solenoidMap.get("elevatorBrake").talonID, robotSchema.solenoidMap.get("elevatorBrake").pcmChannel);
 
 		// Sets talons and solenoids used to open, close and pull in the intake
 		pistonLeft = new Solenoid(robotSchema.solenoidMap.get("pistonLeft").talonID, robotSchema.solenoidMap.get("pistonLeft").pcmChannel);
