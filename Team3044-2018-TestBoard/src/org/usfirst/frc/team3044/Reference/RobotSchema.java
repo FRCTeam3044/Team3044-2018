@@ -44,13 +44,13 @@ public class RobotSchema {
 		map.put("rightBackDrive", 3);
 
 		// Elevator
-		map.put("elevator1", 4);
-		map.put("elevator2", 5);
+		map.put("elevator1", 12);
+		map.put("elevator2", 13);
 
 		// Intake
-		map.put("leftSweep", 6);
-		map.put("rightSweep", 7);
-		map.put("wristMotor", 8);
+		map.put("leftSweep", 4);
+		map.put("rightSweep", 5);
+		map.put("wristMotor", 6);
 
 		return map;
 	}
