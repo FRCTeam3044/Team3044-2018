@@ -38,19 +38,19 @@ public class RobotSchema {
 		// Device name, CAN Talon ID
 
 		// Drive
-		map.put("leftFrontDrive", 1);
-		map.put("rightFrontDrive", 3);
-		map.put("leftBackDrive", 2);
-		map.put("rightBackDrive", 4);
+		map.put("leftFrontDrive", 0);
+		map.put("rightFrontDrive", 2);
+		map.put("leftBackDrive", 1);
+		map.put("rightBackDrive", 3);
 
 		// Elevator
-		map.put("elevator1", 5);
-		map.put("elevator2", 6);
+		map.put("elevator1", 4);
+		map.put("elevator2", 5);
 
 		// Intake
-		map.put("leftSweep", 7);
-		map.put("rightSweep", 8);
-		map.put("wristMotor", 9);
+		map.put("leftSweep", 6);
+		map.put("rightSweep", 7);
+		map.put("wristMotor", 8);
 
 		return map;
 	}
