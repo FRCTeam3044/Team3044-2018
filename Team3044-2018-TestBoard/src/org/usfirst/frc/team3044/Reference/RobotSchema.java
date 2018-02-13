@@ -50,7 +50,7 @@ public class RobotSchema {
 		// Intake
 		map.put("leftSweep", 4);
 		map.put("rightSweep", 5);
-		map.put("wristMotor", 6);
+		map.put("wristMotor", 14);
 
 		return map;
 	}
