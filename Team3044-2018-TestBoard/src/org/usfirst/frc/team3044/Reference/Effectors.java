@@ -9,7 +9,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -21,6 +24,12 @@ public class Effectors {
 	
 
 	private static Effectors instance = null;
+
+	// Robot components and driver station we can use to get information from.
+	Compressor compressor = new Compressor();
+	PowerDistributionPanel pdp = new PowerDistributionPanel();
+	DriverStation ds = DriverStation.getInstance();
+
 	// Drive
 	public WPI_TalonSRX leftFrontDrive;
 	public WPI_TalonSRX rightFrontDrive;
@@ -64,6 +73,12 @@ public class Effectors {
 
 	public void init() {
 		RobotSchema robotSchema = new RobotSchema();
+
+		compressor.setClosedLoopControl(true);
+		// compressor.stop(); //Use this to stop the compressor.
+		// double current = pdp.getCurrent(1); //Use this to get the current
+		// pdp.getTotal<something> //Or this
+		// time = DriverStation.getInstance().getMatchTime(); //Maybe stop compressor in last 15 seconds.
 
 		// Sets talons for drive and defines them as such
 		leftFrontDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftFrontDrive"));
