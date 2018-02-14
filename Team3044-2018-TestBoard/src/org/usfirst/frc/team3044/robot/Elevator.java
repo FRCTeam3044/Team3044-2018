@@ -33,18 +33,18 @@ public class Elevator {
 		moveElevator();
 		brakeElevator();
 	}
-	
+
 	private void moveElevator() {
 		if (toggle == true) {
 			elevator1.set(0);
 			elevator2.set(0);
 			// Raises elevator up when Y button is pressed.
-		} else if (controller.getRawButton(controller.BUTTON_Y)) {
+		} else if (controller.getRawButton(SecondController.BUTTON_Y)) {
 			elevator1.set(0.5);
 			elevator2.set(-0.5);
 
 			// Lowers elevator when the A button is pressed if the Y button is not being pressed.
-		} else if (controller.getRawButton(controller.BUTTON_A)) {
+		} else if (controller.getRawButton(SecondController.BUTTON_A)) {
 			elevator1.set(-0.5);
 			elevator2.set(0.5);
 
@@ -52,15 +52,15 @@ public class Elevator {
 		} else {
 			elevator1.set(0);
 			elevator2.set(0);
-		}	
+		}
 	}
-	
+
 	private void brakeElevator() {
-		//Activates the brake if the B button is pressesd, disengages it otherwise.
-		if (controller.getRawButton(controller.BUTTON_B)) {
+		// Activates the brake if the B button is pressesd, disengages it otherwise.
+		if (controller.getRawButton(SecondController.BUTTON_B)) {
 			toggle = !toggle;
-		} 
-		
+		}
+
 		elevatorBrake.set(toggle);
 	}
 }
