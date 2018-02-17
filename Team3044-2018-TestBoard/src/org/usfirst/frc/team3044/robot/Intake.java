@@ -10,14 +10,14 @@ import org.usfirst.frc.team3044.Reference.*;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Intake {
 
 	// Calls on second controller from Second Controller and the solenoids and talons form Effectors.
 	SecondController controller = SecondController.getInstance();
-	public Solenoid pistonLeft;
-	public Solenoid pistonRight;
+	public DoubleSolenoid pistonLeft;
+	public DoubleSolenoid pistonRight;
 	public WPI_TalonSRX wristMotor;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
@@ -54,13 +54,13 @@ public class Intake {
 	void intakeGrab() {
 		// Opens intake when the left of the d-pad is activated.
 		if (controller.getDPadLeft()) {
-			pistonLeft.set(true);
-			pistonRight.set(true);
+			pistonLeft.set(DoubleSolenoid.Value.kForward);
+			pistonRight.set(DoubleSolenoid.Value.kForward);
 		}
 		// Closes intake when the right of the d-pad is activated.
 		if (controller.getDPadRight()) {
-			pistonLeft.set(false);
-			pistonRight.set(false);
+			pistonLeft.set(DoubleSolenoid.Value.kReverse);
+			pistonRight.set(DoubleSolenoid.Value.kReverse);
 		}
 	}
 

@@ -10,7 +10,7 @@ import org.usfirst.frc.team3044.Reference.*;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Elevator {
 
@@ -18,7 +18,7 @@ public class Elevator {
 	SecondController controller = SecondController.getInstance();
 	public WPI_TalonSRX elevator1;
 	public WPI_TalonSRX elevator2;
-	public Solenoid elevatorBrake;
+	public DoubleSolenoid elevatorBrake;
 	private Effectors comp = Effectors.getInstance();
 	private boolean toggle;
 
@@ -61,6 +61,11 @@ public class Elevator {
 			toggle = !toggle;
 		}
 
-		elevatorBrake.set(toggle);
+		if (toggle) {
+			elevatorBrake.set(DoubleSolenoid.Value.kForward);
+		} else {
+			elevatorBrake.set(DoubleSolenoid.Value.kReverse);
+		}
+
 	}
 }

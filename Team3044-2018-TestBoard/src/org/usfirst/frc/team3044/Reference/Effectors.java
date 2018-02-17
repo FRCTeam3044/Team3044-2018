@@ -1,20 +1,20 @@
-/* Primarily sets names for inputs to be used later in the code for convenience and legibility.
- * Starts by creating names and attaching a type to them (talon, analog, solenoid, etc.)
- * After names are set they are attached to a mapped location as is defined in the RobotSchema.
- */
-
 package org.usfirst.frc.team3044.Reference;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
+/**
+ * Primarily sets names for inputs to be used later in the code for convenience and legibility.
+ * Starts by creating names and attaching a type to them (talon, analog, solenoid, etc.)
+ * After names are set they are attached to a mapped location as is defined in the RobotSchema.
+ */
 public class Effectors {
 
 	private static Effectors instance = null;
@@ -46,11 +46,11 @@ public class Effectors {
 	// Elevator
 	public WPI_TalonSRX elevator1;
 	public WPI_TalonSRX elevator2;
-	public Solenoid elevatorBrake;
+	public DoubleSolenoid elevatorBrake;
 
 	// Intake
-	public Solenoid pistonLeft;
-	public Solenoid pistonRight;
+	public DoubleSolenoid pistonLeft;
+	public DoubleSolenoid pistonRight;
 	public WPI_TalonSRX wristMotor;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
@@ -80,6 +80,13 @@ public class Effectors {
 		leftBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftBackDrive"));
 		rightBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightBackDrive"));
 
+		// Untested
+		/*
+		 * leftFrontDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0,0);
+		 * int pulseWidthPos = leftFrontDrive.getSensorCollection().getPulseWidthPosition();
+		 * leftBackDrive.set(com.ctre.phoenix.motorcontrol.ControlMode.Follower, robotSchema.canTalonMap.get("leftFrontDrive"));
+		 */
+
 		// Sets groups for drive talons to later be used in the WPI tank drive
 		m_left = new SpeedControllerGroup(leftFrontDrive, leftBackDrive);
 		m_right = new SpeedControllerGroup(rightFrontDrive, rightBackDrive);
@@ -96,11 +103,11 @@ public class Effectors {
 		// Sets talons for elevator motors
 		elevator1 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
 		elevator2 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator2"));
-		elevatorBrake = new Solenoid(robotSchema.solenoidMap.get("elevatorBrake").talonID, robotSchema.solenoidMap.get("elevatorBrake").pcmChannel);
+		elevatorBrake = new DoubleSolenoid(61, 3, 4);
 
 		// Sets talons and solenoids used to open, close and pull in the intake
-		pistonLeft = new Solenoid(robotSchema.solenoidMap.get("pistonLeft").talonID, robotSchema.solenoidMap.get("pistonLeft").pcmChannel);
-		pistonRight = new Solenoid(robotSchema.solenoidMap.get("pistonRight").talonID, robotSchema.solenoidMap.get("pistonRight").pcmChannel);
+		pistonLeft = new DoubleSolenoid(61, 1, 6);
+		pistonRight = new DoubleSolenoid(61, 2, 5);
 		wristMotor = new WPI_TalonSRX(robotSchema.canTalonMap.get("wristMotor"));
 
 		// Sets talons for motors used in intake system
