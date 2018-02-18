@@ -1,7 +1,7 @@
 /**Justin Sheehan
  * 1/27/18
  * FRC Team 3044
- * Raises and lowers the elevator using the Y and A buttons.
+ * Raises and lowers the elevator and activates the piston that stops the chain when we have climbed fully.
  */
 
 package org.usfirst.frc.team3044.robot;
@@ -20,13 +20,13 @@ public class Elevator {
 	public WPI_TalonSRX elevator2;
 	public DoubleSolenoid elevatorBrake;
 	private Effectors comp = Effectors.getInstance();
-	private boolean toggle;
+	private boolean brakeToggle;
 
 	public void elevatorInit() {
 		elevator1 = comp.elevator1;
 		elevator2 = comp.elevator2;
 		elevatorBrake = comp.elevatorBrake;
-		toggle = false;
+		brakeToggle = false;
 	}
 
 	public void elevatorPeriodic() {
@@ -35,7 +35,7 @@ public class Elevator {
 	}
 
 	private void moveElevator() {
-		if (toggle == true) {
+		if (brakeToggle == true) {
 			elevator1.set(0);
 			elevator2.set(0);
 			// Raises elevator up when Y button is pressed.
@@ -56,12 +56,12 @@ public class Elevator {
 	}
 
 	private void brakeElevator() {
-		// Activates the brake if the B button is pressesd, disengages it otherwise.
-		if (controller.getRawButton(SecondController.BUTTON_B)) {
-			toggle = !toggle;
+		// Activates the brake if the X button is pressed, disengages it otherwise.
+		if (controller.getRawButton(SecondController.BUTTON_X)) {
+			brakeToggle = !brakeToggle;
 		}
 
-		if (toggle) {
+		if (brakeToggle) {
 			elevatorBrake.set(DoubleSolenoid.Value.kForward);
 		} else {
 			elevatorBrake.set(DoubleSolenoid.Value.kReverse);

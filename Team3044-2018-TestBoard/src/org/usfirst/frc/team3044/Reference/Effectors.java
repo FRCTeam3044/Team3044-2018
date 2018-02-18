@@ -3,15 +3,11 @@ package org.usfirst.frc.team3044.Reference;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Primarily sets names for inputs to be used later in the code for convenience and legibility.
@@ -23,7 +19,7 @@ public class Effectors {
 	private static Effectors instance = null;
 
 	// Robot components and driver station we can use to get information from.
-	public Compressor compressor = new Compressor();
+	public Compressor compressor = new Compressor(61);
 	public PowerDistributionPanel pdp = new PowerDistributionPanel();
 	public DriverStation ds = DriverStation.getInstance();
 
@@ -33,16 +29,12 @@ public class Effectors {
 	public WPI_TalonSRX leftBackDrive;
 	public WPI_TalonSRX rightBackDrive;
 
-	// Drive motor groups
-	SpeedControllerGroup m_left;
-	SpeedControllerGroup m_right;
+	// Drive motor groups, not needed with talon follower.
+	// SpeedControllerGroup m_left;
+	// SpeedControllerGroup m_right;
 
 	// WPI tank drive
 	public DifferentialDrive myDrive;
-
-	// Encoders
-	public Encoder elevatorEncoder;
-	public Encoder wristEncoder;
 
 	// Elevator
 	public WPI_TalonSRX elevator1;
@@ -50,8 +42,7 @@ public class Effectors {
 	public DoubleSolenoid elevatorBrake;
 
 	// Intake
-	public DoubleSolenoid pistonLeft;
-	public DoubleSolenoid pistonRight;
+	public DoubleSolenoid intakePiston;
 	public WPI_TalonSRX wristMotor;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
@@ -81,51 +72,52 @@ public class Effectors {
 		leftBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftBackDrive"));
 		rightBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightBackDrive"));
 
-		leftFrontDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
-		rightFrontDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
-		
+		// Adds encoders to the motors.
+		leftFrontDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
+		rightFrontDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
+
+		// Sets the back motors to follow the front motors.
+		leftBackDrive.follow(leftFrontDrive);
+		rightBackDrive.follow(rightFrontDrive);
+
+		// Sets the talons to coast mode so we don't tip when stopping.
 		leftFrontDrive.setNeutralMode(NeutralMode.Coast);
 		rightFrontDrive.setNeutralMode(NeutralMode.Coast);
 		leftBackDrive.setNeutralMode(NeutralMode.Coast);
 		rightBackDrive.setNeutralMode(NeutralMode.Coast);
-		
-		leftFrontDrive.configOpenloopRamp(.2, 0);
-		rightFrontDrive.configOpenloopRamp(.2, 0);
-		leftBackDrive.configOpenloopRamp(.2, 0);
-		rightBackDrive.configOpenloopRamp(.2, 0);
-		
-		// Untested
-		/*
-		 * 
-		 * leftBackDrive.set(com.ctre.phoenix.motorcontrol.ControlMode.Follower, robotSchema.canTalonMap.get("leftFrontDrive"));
-		 */
 
-		// Sets groups for drive talons to later be used in the WPI tank drive
-		//m_left = new SpeedControllerGroup(leftFrontDrive, leftBackDrive);
-		//m_right = new SpeedControllerGroup(rightFrontDrive, rightBackDrive);
+		// Increases the time taken for the motors to go from 0 to full.
+		leftFrontDrive.configOpenloopRamp(.2, 10);
+		rightFrontDrive.configOpenloopRamp(.2, 10);
+		leftBackDrive.configOpenloopRamp(.2, 10);
+		rightBackDrive.configOpenloopRamp(.2, 10);
 
-		// Uses talon groups to define motors used in WPI tank drive
+		// Sets groups for drive talons to later be used in the WPI tank drive, not needed with the talon follower.
+		// m_left = new SpeedControllerGroup(leftFrontDrive, leftBackDrive);
+		// m_right = new SpeedControllerGroup(rightFrontDrive, rightBackDrive);
+
+		// Uses front talons to define motors used in WPI tank drive, the back motors move because of the follower.
 		myDrive = new DifferentialDrive(leftFrontDrive, rightFrontDrive);
-		leftBackDrive.follow(leftFrontDrive);
-		rightBackDrive.follow(rightFrontDrive);
 
-		// Defines encoder inputs
+		// Defines encoder inputs, maybe not needed if plugged into talon.
 		// elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 		// wristEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 
-		// Sets talons for elevator motors
+		// Sets talons and solenoid for the elevator.
 		elevator1 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
 		elevator2 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator2"));
-		elevatorBrake = new DoubleSolenoid(61, 3, 4);
+		elevatorBrake = new DoubleSolenoid(61, 2, 3);
 
 		// Sets talons and solenoids used to open, close and pull in the intake
-		pistonLeft = new DoubleSolenoid(61, 1, 6);
-		pistonRight = new DoubleSolenoid(61, 2, 5);
-		wristMotor = new WPI_TalonSRX(robotSchema.canTalonMap.get("wristMotor"));
-
-		// Sets talons for motors used in intake system
 		leftSweep = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftSweep"));
 		rightSweep = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightSweep"));
+		intakePiston = new DoubleSolenoid(61, 0, 1);
+		wristMotor = new WPI_TalonSRX(robotSchema.canTalonMap.get("wristMotor"));
+
+		wristMotor.setNeutralMode(NeutralMode.Brake); // Puts the wrist motor in brake mode so it stays where it is when not being used.
+
+		// For the encoder plugged into the talon, untested at this point.
+		wristMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
 
 		// example = new Solenoid(robotSchema.solenoidMap.get("example").talonID, robotSchema.solenoidMap.get("example").pcmChannel);
 	}

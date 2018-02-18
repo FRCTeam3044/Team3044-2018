@@ -5,25 +5,14 @@ package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.*;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
 public class Drive {
 	FirstController firstController = FirstController.getInstance();
-	SecondController secondController = SecondController.getInstance();
 	private Effectors comp = Effectors.getInstance();
 
 	DifferentialDrive myDrive;
-	SpeedControllerGroup m_left;
-	SpeedControllerGroup m_right;
-
-	AnalogInput leftEncoder;
-	AnalogInput rightEncoder;
-	int leftBits;
-	int rightBits;
 
 	PIDController leftPID;
 	PIDController rightPID;
@@ -39,7 +28,7 @@ public class Drive {
 
 	public void drivePeriodic() {
 		// Names and defines values used to read the input from the joysticks of the first controller.
-		double y1 = firstController.getLeftY(); // Shouldn't be here
+		double y1 = firstController.getLeftY();
 		double y2 = firstController.getRightY();
 
 		// Calls the function that runs the tank drive and uses values from the joysticks.

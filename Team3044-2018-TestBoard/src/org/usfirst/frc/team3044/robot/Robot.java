@@ -12,9 +12,11 @@ public class Robot extends IterativeRobot {
 	Drive drive = new Drive();
 	Elevator elevator = new Elevator();
 	Intake intake = new Intake();
+	Autonomous autonomous = new Autonomous();
 	private Effectors comp = Effectors.getInstance();
 
 	// Creates variables for autonomous selection.
+	// TODO: For some reason, this only works in the java dashboard.
 	final String startCenter = "Start Center";
 	final String startLeft = "Start Left";
 	final String startRight = "Start Right";
@@ -45,12 +47,13 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-		// Gets the autonomous mode that has been selected.
-		autoSelected = chooser.getSelected();
+		autonomous.autonomousInit();
 
+		// Gets the autonomous mode that has been selected and prints it out.
+		autoSelected = chooser.getSelected();
 		System.out.println("Auto selected: " + autoSelected);
 
-		// Gets the string that has the position of switch and scale.
+		// Gets the string from FMS that has the position of switch and scale.
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
 
@@ -109,31 +112,37 @@ public class Robot extends IterativeRobot {
 	}
 
 	// Initializes subsystems.
+	@Override
 	public void teleopInit() {
 		drive.driveInit();
 		elevator.elevatorInit();
 		intake.intakeInit();
+
+		// Resets the encoders and timer.
 		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
+		Autonomous.time.reset();
 	}
 
 	/**
 	 * This function is called periodically during operator control
 	 */
-	@Override
 	// Runs subsystems
+	@Override
 	public void teleopPeriodic() {
+		// For testing encoders, will be moved to a different class.
 		int leftAnalogPos = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();
 		SmartDashboard.putString("DB/String 2", "leftAnalogPos: " + String.valueOf(leftAnalogPos));
 		int rightAnalogPos = Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn();
 		SmartDashboard.putString("DB/String 3", "rightAnalogPos: " + String.valueOf(rightAnalogPos));
-		
-		SmartDashboard.putString("DB/String 4", "current of 0: " + String.valueOf(comp.pdp.getCurrent(0)));
-		
+		int wristEncoderPos = Effectors.getInstance().wristMotor.getSensorCollection().getAnalogIn();
+		SmartDashboard.putString("DB/String 4", "wristEncoderPos: " + String.valueOf(wristEncoderPos));
+
+		SmartDashboard.putString("DB/String 10", "current of 0: " + String.valueOf(comp.pdp.getTotalCurrent()));
+
 		drive.drivePeriodic();
 		elevator.elevatorPeriodic();
 		intake.intakePeriodic();
-		
 
 	}
 
@@ -142,11 +151,12 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+		// Not working.
 		LiveWindow.run();
 	}
-	
+
+	@Override
 	public void disabledPeriodic() {
-		
-		
+
 	}
 }
