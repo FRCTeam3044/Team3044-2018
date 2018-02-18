@@ -4,6 +4,7 @@ import org.usfirst.frc.team3044.Reference.Effectors;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -11,6 +12,7 @@ public class Robot extends IterativeRobot {
 	Drive drive = new Drive();
 	Elevator elevator = new Elevator();
 	Intake intake = new Intake();
+	private Effectors comp = Effectors.getInstance();
 
 	// Creates variables for autonomous selection.
 	final String startCenter = "Start Center";
@@ -111,6 +113,8 @@ public class Robot extends IterativeRobot {
 		drive.driveInit();
 		elevator.elevatorInit();
 		intake.intakeInit();
+		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
+		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
 	}
 
 	/**
@@ -119,9 +123,18 @@ public class Robot extends IterativeRobot {
 	@Override
 	// Runs subsystems
 	public void teleopPeriodic() {
+		int leftAnalogPos = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();
+		SmartDashboard.putString("DB/String 2", "leftAnalogPos: " + String.valueOf(leftAnalogPos));
+		int rightAnalogPos = Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn();
+		SmartDashboard.putString("DB/String 3", "rightAnalogPos: " + String.valueOf(rightAnalogPos));
+		
+		SmartDashboard.putString("DB/String 4", "current of 0: " + String.valueOf(comp.pdp.getCurrent(0)));
+		
 		drive.drivePeriodic();
 		elevator.elevatorPeriodic();
 		intake.intakePeriodic();
+		
+
 	}
 
 	/**
@@ -129,5 +142,11 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+		LiveWindow.run();
+	}
+	
+	public void disabledPeriodic() {
+		
+		
 	}
 }
