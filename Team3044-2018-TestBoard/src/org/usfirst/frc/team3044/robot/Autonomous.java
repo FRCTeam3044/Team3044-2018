@@ -8,23 +8,41 @@ package org.usfirst.frc.team3044.robot;
 import org.usfirst.frc.team3044.Reference.*;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class Autonomous {
+	public static Effectors comp = Effectors.getInstance();
 
-	// Allows for calling outputs from Effectors.java by adding out before the previously named talon.
-	public Effectors out = Effectors.getInstance();
+	static DifferentialDrive myDrive;
 
-	// Creates a timer (named time) that can be used to trigger the next event.
-	Timer time = new Timer();
+	// Creates a timer that can be used to trigger the next event.
+	static Timer time = new Timer();
 
-	// Sets the auto states to 0.
-	int baseline = 0;
-	int centerSwitch = 0;
-	int sideScale = 0;
+	// Sets the auto states to 0, not needed unless we use switch statements.
+	/*
+	 * int baseline = 0;
+	 * int centerSwitch = 0;
+	 * int sideScale = 0;
+	 */
+
+	public void autonomousInit() {
+		myDrive = comp.myDrive;
+
+		/*
+		 * baseline = 0;
+		 * centerSwitch = 0;
+		 * sideScale = 0;
+		 */
+		time.reset();
+		time.start();
+	}
 
 	// Contains the auto for crossing the baseline.
 	public static void baseline() {
-
+		while (time.get() < 2) {
+			myDrive.tankDrive(.5, .5, false);
+		}
+		myDrive.tankDrive(0.0, 0.0, false);
 	}
 
 	// Contains the auto for placing a cube in the switch from the center.

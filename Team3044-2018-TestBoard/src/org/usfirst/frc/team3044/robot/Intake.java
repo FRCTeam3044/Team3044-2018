@@ -10,69 +10,64 @@ import org.usfirst.frc.team3044.Reference.*;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Intake {
-
+	private Effectors comp = Effectors.getInstance();
 	// Calls on second controller from Second Controller and the solenoids and talons form Effectors.
 	SecondController controller = SecondController.getInstance();
-	public Solenoid pistonLeft;
-	public Solenoid pistonRight;
+	public DoubleSolenoid intakePiston;
 	public WPI_TalonSRX wristMotor;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
-	private Effectors comp = Effectors.getInstance();
 
 	public void intakeInit() {
 		leftSweep = comp.leftSweep;
 		rightSweep = comp.rightSweep;
-		pistonLeft = comp.pistonLeft;
-		pistonRight = comp.pistonRight;
+		intakePiston = comp.intakePiston;
 		wristMotor = comp.wristMotor;
 
 	}
 
 	public void intakePeriodic() {
 
-		// Sets power to the sweeper motors based on input value of the Y value on the left stick.
+		// Gets the Y value on the left stick.
 		double y1 = controller.getLeftY();
 
 		// Calls functions that take the block in and out, open and close the intake arms, and move the wrist up and down.
 		intakeWheels(y1);
-		intakeGrab();
+		intakeGrab(controller.getRawButton(SecondController.BUTTON_B));
 		wristMovement();
 
 	}
 
-	// Function to take the block in and out.
+	// Function to take the block in and out, values doubled to get to full power faster.
 	void intakeWheels(double speed) {
-		leftSweep.set(speed);
-		rightSweep.set(-speed);
+		leftSweep.set(speed * 2);
+		rightSweep.set(-speed * 2);
 	}
 
-	// Function to open and close the intake arms.
-	void intakeGrab() {
-		// Opens intake when the left of the d-pad is activated.
-		if (controller.getDPadLeft()) {
-			pistonLeft.set(true);
-			pistonRight.set(true);
-		}
-		// Closes intake when the right of the d-pad is activated.
-		if (controller.getDPadRight()) {
-			pistonLeft.set(false);
-			pistonRight.set(false);
+	// Function to open and close the intake arms. Defaults closes, only opens on button press.
+	void intakeGrab(boolean button) {
+		// Open intake when button is pressed.
+		if (button) {
+			intakePiston.set(DoubleSolenoid.Value.kForward);
+		} else {// Closes intake when not pressed.
+			intakePiston.set(DoubleSolenoid.Value.kReverse);
 		}
 	}
 
 	// Function to move the wrist up and down.
 	void wristMovement() {
-		// Pulls the intake up when the top of the d-pad is activated.
-		if (controller.getDPadUp()) {
-			wristMotor.set(-0.5);
+		// Pulls the intake up when the left trigger is activated.
+		if (controller.getTriggerLeft()) {
+			wristMotor.set(-0.7);
 		}
-		// Drops the intake down when he bottom of the d-pad is activated.
-		if (controller.getDPadDown()) {
-			wristMotor.set(0.5);
+		// Drops the intake down when right trigger is activated.
+		else if (controller.getTriggerRight()) {
+			wristMotor.set(0.3);
+		} else {
+			wristMotor.set(0);
 		}
 	}
 }
