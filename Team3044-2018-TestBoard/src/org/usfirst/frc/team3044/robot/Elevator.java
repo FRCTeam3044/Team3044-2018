@@ -35,7 +35,7 @@ public class Elevator {
 	}
 
 	private void moveElevator() {
-		//Stops the elevator form moving if the brake toggle is pressed.	
+		//Stops the elevator from moving if the brake toggle is pressed.	
 		if (brakeToggle == true) {
 			elevator1.set(0);
 			elevator2.set(0);
