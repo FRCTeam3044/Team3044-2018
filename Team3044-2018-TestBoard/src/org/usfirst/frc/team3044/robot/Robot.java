@@ -2,6 +2,7 @@ package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.Effectors;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -43,6 +44,8 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Start Left", startLeft);
 		chooser.addObject("Start Right", startRight);
 		SmartDashboard.putData("Auto choices", chooser);
+		
+		CameraServer.getInstance().startAutomaticCapture().setResolution(640, 480);
 	}
 
 	@Override
