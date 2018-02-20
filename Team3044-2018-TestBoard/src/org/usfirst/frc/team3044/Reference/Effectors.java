@@ -46,6 +46,8 @@ public class Effectors {
 	public WPI_TalonSRX wristMotor;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
+	
+	int PIDTimeout = 10;
 
 	private Effectors() {
 	}
@@ -91,6 +93,33 @@ public class Effectors {
 		rightFrontDrive.configOpenloopRamp(.2, 10);
 		leftBackDrive.configOpenloopRamp(.2, 10);
 		rightBackDrive.configOpenloopRamp(.2, 10);
+		
+		//ForPID
+		leftFrontDrive.setSensorPhase(true);
+		rightFrontDrive.setSensorPhase(true);
+		
+		/* set the peak, nominal outputs, and deadband */
+		leftFrontDrive.configNominalOutputForward(0, PIDTimeout);
+		leftFrontDrive.configNominalOutputReverse(0, PIDTimeout);
+		leftFrontDrive.configPeakOutputForward(1, PIDTimeout);
+		leftFrontDrive.configPeakOutputReverse(-1, PIDTimeout);
+		/* set the peak, nominal outputs, and deadband */
+		rightFrontDrive.configNominalOutputForward(0, PIDTimeout);
+		rightFrontDrive.configNominalOutputReverse(0, PIDTimeout);
+		rightFrontDrive.configPeakOutputForward(1, PIDTimeout);
+		rightFrontDrive.configPeakOutputReverse(-1, PIDTimeout);
+		
+		/* set closed loop gains in slot0 */
+		leftFrontDrive.config_kF(0, 0.34, PIDTimeout);
+		leftFrontDrive.config_kP(0, 0.2, PIDTimeout);
+		leftFrontDrive.config_kI(0, 0, PIDTimeout);
+		leftFrontDrive.config_kD(0, 0, PIDTimeout);
+		/* set closed loop gains in slot0 */
+		rightFrontDrive.config_kF(0, 0.34, PIDTimeout);
+		rightFrontDrive.config_kP(0, 0.2, PIDTimeout);
+		rightFrontDrive.config_kI(0, 0, PIDTimeout);
+		rightFrontDrive.config_kD(0, 0, PIDTimeout);
+		
 
 		// Sets groups for drive talons to later be used in the WPI tank drive, not needed with the talon follower.
 		// m_left = new SpeedControllerGroup(leftFrontDrive, leftBackDrive);
@@ -115,9 +144,12 @@ public class Effectors {
 		wristMotor = new WPI_TalonSRX(robotSchema.canTalonMap.get("wristMotor"));
 
 		wristMotor.setNeutralMode(NeutralMode.Brake); // Puts the wrist motor in brake mode so it stays where it is when not being used.
-
+		
 		// For the encoder plugged into the talon, untested at this point.
-		wristMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
+		wristMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
+		
+		leftSweep.configNeutralDeadband(2, 10);
+		rightSweep.configNeutralDeadband(2, 10);
 
 		// example = new Solenoid(robotSchema.solenoidMap.get("example").talonID, robotSchema.solenoidMap.get("example").pcmChannel);
 	}
