@@ -22,8 +22,8 @@ public class Drive {
 		myDrive = comp.myDrive;
 
 		// Sets up the PID Loop.
-		// leftPID = new PIDController(1, 1, 1, leftEncoder, m_left, 50);
-		// rightPID = new PIDController(1, 1, 1, rightEncoder, m_right, 50);
+		// leftPID = new PIDController(1, 1, 1, comp.leftFrontDrive., comp.leftFrontDrive, 50);
+		// rightPID = new PIDController(1, 1, 1, rightEncoder, comp.rightFrontDrive, 50);
 	}
 
 	public void drivePeriodic() {
@@ -47,7 +47,9 @@ public class Drive {
 
 		// If not, we'll need to use this.
 		// Sets power to the motor groups from Effectors based on the input values from the sticks.
-		myDrive.tankDrive(y1, y2, true);
+		 myDrive.tankDrive(y1, y2, true);
 		// myDrive.arcadeDrive(y1, firstController.getRightX(), true);
+		//comp.leftFrontDrive.set(ControlMode.Velocity, y1 * 4096 * 500.0 / 600);
+		//comp.rightFrontDrive.set(ControlMode.Velocity, -y2 * 4096 * 500.0 / 600);
 	}
 }

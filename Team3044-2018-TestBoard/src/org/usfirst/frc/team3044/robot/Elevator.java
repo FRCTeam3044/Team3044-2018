@@ -10,39 +10,45 @@ import org.usfirst.frc.team3044.Reference.*;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Elevator {
 
-	// Calls on second controller from SecondController and on talons for the elevator from Effectors.
+	// Calls on second controller from SecondController and on talons for the
+	// elevator from Effectors.
 	SecondController controller = SecondController.getInstance();
-	public WPI_TalonSRX elevator1;
-	public WPI_TalonSRX elevator2;
+	public static WPI_TalonSRX elevator1;
+	public static WPI_TalonSRX elevator2;
 	public DoubleSolenoid elevatorBrake;
+	public DigitalInput elevatorLimit;
 	private Effectors comp = Effectors.getInstance();
 	private boolean brakeToggle;
+	private static int elevatorStart;
+	private static double y2;
 
 	public void elevatorInit() {
 		elevator1 = comp.elevator1;
 		elevator2 = comp.elevator2;
 		elevatorBrake = comp.elevatorBrake;
+		elevatorLimit = comp.elevatorLimit;
 		brakeToggle = false;
 	}
 
 	public void elevatorPeriodic() {
-		moveElevator();
+		y2 = controller.getRightY();
+
+		testLimitSwitch();
 		brakeElevator();
+		moveElevator();
 	}
 
-	private void moveElevator() {
-		//Stops the elevator from moving if the brake toggle is pressed.	
-		if (brakeToggle == true) {
-			elevator1.set(0);
-			elevator2.set(0);
-		// Moves elevator if brake toggle is not activated
-		} else {
-			elevator1.set(controller.getRightY());
-			elevator2.set(-controller.getRightY());
+	private void testLimitSwitch() {
+		if (elevatorLimit.get()) {
+			resetEncoders();
+			if (y2 < 0) {
+				y2 = 0;
+			}
 		}
 	}
 
@@ -58,5 +64,33 @@ public class Elevator {
 			elevatorBrake.set(DoubleSolenoid.Value.kReverse);
 		}
 
+	}
+
+	private void moveElevator() {
+		// Stops the elevator from moving if the brake toggle is pressed.
+		if (brakeToggle == true) {
+			elevator1.set(0);
+			elevator2.set(0);
+		// Moves elevator if brake toggle is not activated
+		} else {
+			elevator1.set(y2);
+			elevator2.set(-y2);
+		}
+	}
+
+	public static void resetEncoders() {
+		// Resets the encoder to 0.
+		Effectors.getInstance().elevator1.setSelectedSensorPosition(0, 0, 0);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		elevatorStart = Effectors.getInstance().elevator1.getSensorCollection().getAnalogIn();
+	}
+	
+	public static int actualValue(int startingValue, int readValue) {
+		return readValue - startingValue;
 	}
 }
