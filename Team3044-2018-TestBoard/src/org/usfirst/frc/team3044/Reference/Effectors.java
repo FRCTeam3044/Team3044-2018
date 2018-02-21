@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -40,6 +41,7 @@ public class Effectors {
 	public WPI_TalonSRX elevator1;
 	public WPI_TalonSRX elevator2;
 	public DoubleSolenoid elevatorBrake;
+	public DigitalInput elevatorLimit;
 
 	// Intake
 	public DoubleSolenoid intakePiston;
@@ -73,6 +75,9 @@ public class Effectors {
 		rightFrontDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightFrontDrive"));
 		leftBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftBackDrive"));
 		rightBackDrive = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightBackDrive"));
+		
+		//Initlizes the limit switch
+		elevatorLimit = new DigitalInput(1);
 
 		// Adds encoders to the motors.
 		leftFrontDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);

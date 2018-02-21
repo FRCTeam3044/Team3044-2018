@@ -10,15 +10,17 @@ import org.usfirst.frc.team3044.Reference.*;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Elevator {
 
 	// Calls on second controller from SecondController and on talons for the elevator from Effectors.
 	SecondController controller = SecondController.getInstance();
-	public WPI_TalonSRX elevator1;
-	public WPI_TalonSRX elevator2;
+	public static WPI_TalonSRX elevator1;
+	public static WPI_TalonSRX elevator2;
 	public DoubleSolenoid elevatorBrake;
+	public DigitalInput elevatorLimit;
 	private Effectors comp = Effectors.getInstance();
 	private boolean brakeToggle;
 
@@ -26,14 +28,23 @@ public class Elevator {
 		elevator1 = comp.elevator1;
 		elevator2 = comp.elevator2;
 		elevatorBrake = comp.elevatorBrake;
+		elevatorLimit = comp.elevatorLimit;
 		brakeToggle = false;
 	}
 
 	public void elevatorPeriodic() {
+		testLimitSwitch();
 		moveElevator();
 		brakeElevator();
 	}
 
+	private void testLimitSwitch() {
+		if (elevatorLimit.get()) {
+			brakeToggle = true;
+			resetEncoders();
+		}
+	}
+	
 	private void moveElevator() {
 		//Stops the elevator from moving if the brake toggle is pressed.	
 		if (brakeToggle == true) {
@@ -58,5 +69,17 @@ public class Elevator {
 			elevatorBrake.set(DoubleSolenoid.Value.kReverse);
 		}
 
+	}
+	
+	public static void resetEncoders() {
+		// Resets the encoders to 0.
+		Effectors.getInstance().elevator1.setSelectedSensorPosition(0, 0, 0);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		elevator1 = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();
 	}
 }
