@@ -23,6 +23,7 @@ public class Elevator {
 	public DigitalInput elevatorLimit;
 	private Effectors comp = Effectors.getInstance();
 	private boolean brakeToggle;
+	private static int elevatorStart;
 
 	public void elevatorInit() {
 		elevator1 = comp.elevator1;
@@ -33,15 +34,20 @@ public class Elevator {
 	}
 
 	public void elevatorPeriodic() {
-		testLimitSwitch();
 		moveElevator();
+		testLimitSwitch();
 		brakeElevator();
 	}
 
 	private void testLimitSwitch() {
 		if (elevatorLimit.get()) {
-			brakeToggle = true;
 			resetEncoders();
+			if (elevator1.get() < 0) {
+				elevator1.set(0);
+			}
+			if (elevator2.get() > 0) {
+				elevator2.set(0);
+			}
 		}
 	}
 	
@@ -80,6 +86,6 @@ public class Elevator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		elevator1 = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();
+		elevatorStart = Effectors.getInstance().elevator1.getSensorCollection().getAnalogIn();
 	}
 }
