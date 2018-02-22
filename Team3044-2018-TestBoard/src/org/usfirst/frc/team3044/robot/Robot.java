@@ -15,6 +15,7 @@ public class Robot extends IterativeRobot {
 	Intake intake = new Intake();
 	Autonomous autonomous = new Autonomous();
 	private Effectors comp = Effectors.getInstance();
+  Arduino arduino = new Arduino();
 
 	// Creates variables for autonomous selection.
 	// TODO: For some reason, this only works in the java dashboard.
@@ -120,6 +121,7 @@ public class Robot extends IterativeRobot {
 		drive.driveInit();
 		elevator.elevatorInit();
 		intake.intakeInit();
+		arduino.arduinoInit();
 
 		// Resets the encoders and timer.
 		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);

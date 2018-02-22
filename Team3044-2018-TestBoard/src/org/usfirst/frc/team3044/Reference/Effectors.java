@@ -3,6 +3,8 @@ package org.usfirst.frc.team3044.Reference;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -17,6 +19,10 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
  * location as is defined in the RobotSchema.
  */
 public class Effectors {
+
+	public DigitalOutput R = new DigitalOutput(0);
+
+	
 
 	private static Effectors instance = null;
 
