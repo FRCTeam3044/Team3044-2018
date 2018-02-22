@@ -44,8 +44,9 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Start Left", startLeft);
 		chooser.addObject("Start Right", startRight);
 		SmartDashboard.putData("Auto choices", chooser);
-		
+
 		CameraServer.getInstance().startAutomaticCapture().setResolution(640, 480);
+
 	}
 
 	@Override
@@ -65,6 +66,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		double value = SmartDashboard.getNumber("DB/Slider 0", 0); // This could be used for an autonomous delay.
+
 		// The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
 
 		/*
@@ -125,6 +128,7 @@ public class Robot extends IterativeRobot {
 		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		Autonomous.time.reset();
+
 	}
 
 	/**
@@ -141,12 +145,11 @@ public class Robot extends IterativeRobot {
 		int wristEncoderPos = Effectors.getInstance().wristMotor.getSensorCollection().getAnalogIn();
 		SmartDashboard.putString("DB/String 4", "wristEncoderPos: " + String.valueOf(wristEncoderPos));
 
-		SmartDashboard.putString("DB/String 10", "current of 0: " + String.valueOf(comp.pdp.getTotalCurrent()));
+		SmartDashboard.putString("DB/String 9", "current of 0: " + String.valueOf(comp.pdp.getTotalCurrent()));
 
 		drive.drivePeriodic();
 		elevator.elevatorPeriodic();
 		intake.intakePeriodic();
-
 	}
 
 	/**
@@ -154,12 +157,13 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-		// Not working.
+		// This actually does work. You just have to run the java dashboard.
 		LiveWindow.run();
 	}
 
 	@Override
 	public void disabledPeriodic() {
+		SmartDashboard.putString("DB/String 0", "Auto: " + String.valueOf(chooser.getSelected()));
 
 	}
 }

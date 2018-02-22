@@ -51,21 +51,21 @@ public class Intake {
 	void intakeGrab(boolean button) {
 		// Open intake when button is pressed.
 		if (button) {
-			intakePiston.set(DoubleSolenoid.Value.kForward);
-		} else {// Closes intake when not pressed.
 			intakePiston.set(DoubleSolenoid.Value.kReverse);
+		} else {// Closes intake when not pressed.
+			intakePiston.set(DoubleSolenoid.Value.kForward);
 		}
 	}
 
 	// Function to move the wrist up and down.
 	void wristMovement() {
-		// Pulls the intake up when the left trigger is activated.
-		if (controller.getTriggerLeft()) {
-			wristMotor.set(-0.7);
+		// Pulls the intake up when the right trigger is activated.
+		if (controller.getTriggerRight()) {
+			wristMotor.set(0.7);
 		}
-		// Drops the intake down when right trigger is activated.
-		else if (controller.getTriggerRight()) {
-			wristMotor.set(0.3);
+		// Drops the intake down when left trigger is activated.
+		else if (controller.getTriggerLeft()) {
+			wristMotor.set(-0.3);
 		} else {
 			wristMotor.set(0);
 		}
