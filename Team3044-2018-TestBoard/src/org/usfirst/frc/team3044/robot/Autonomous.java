@@ -7,34 +7,80 @@ package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class Autonomous {
+	public static Effectors comp = Effectors.getInstance();
 
-	// Allows for calling outputs from Effectors.java by adding out before the previously named talon.
-	public Effectors out = Effectors.getInstance();
+	static DifferentialDrive myDrive;
 
-	// Creates a timer (named time) that can be used to trigger the next event.
-	Timer time = new Timer();
+	// Creates a timer that can be used to trigger the next event.
+	static Timer time = new Timer();
 
-	// Sets the auto states to 0.
-	int baseline = 0;
-	int centerSwitch = 0;
-	int sideScale = 0;
+	static int leftStart;
+	static int rightStart;
+
+	// Sets the auto states to 0, not needed unless we use switch statements.
+	/*
+	 * int baseline = 0;
+	 * int centerSwitch = 0;
+	 * int sideScale = 0;
+	 */
+
+	public void autonomousInit() {
+		myDrive = comp.myDrive;
+
+		/*
+		 * baseline = 0;
+		 * centerSwitch = 0;
+		 * sideScale = 0;
+		 */
+		time.reset();
+		time.start();
+	}
 
 	// Contains the auto for crossing the baseline.
 	public static void baseline() {
-
+		while (time.get() < 2) {
+			myDrive.tankDrive(.5, .5, false);
+		}
+		myDrive.tankDrive(0.0, 0.0, false);
 	}
 
 	// Contains the auto for placing a cube in the switch from the center.
 	public static void centerSwitch(Boolean mirror) {
-
+		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 2000) {
+			//myDrive.tankDrive(.5, .5, false);
+			comp.leftFrontDrive.set(ControlMode.Velocity, .2 * 4096 * 500.0 / 600);
+			comp.rightFrontDrive.set(ControlMode.Velocity, -.2 * 4096 * 500.0 / 600);
+		}
+		resetEncoders();
+		while (Math.abs(actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 450) {
+			//myDrive.tankDrive(invert(-.5, mirror), invert(.5, mirror), false);
+			comp.leftFrontDrive.set(ControlMode.Velocity, -.2 * 4096 * 500.0 / 600);
+			comp.rightFrontDrive.set(ControlMode.Velocity, -.2 * 4096 * 500.0 / 600);
+		}
+		while (comp.ds.isAutonomous()) {
+			myDrive.tankDrive(0.0, 0.0, false);
+		}
 	}
 
 	// Contains the auto for placing a cube in the switch from the side.
 	public static void sideSwitch(Boolean mirror) {
-
+		resetEncoders();
+		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 5000) {
+			myDrive.tankDrive(.5, .5, false);
+		}
+		resetEncoders();
+		while (Math.abs(actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 900) {
+			myDrive.tankDrive(invert(.5, mirror), invert(-.5, mirror), false);
+		}
+		while (comp.ds.isAutonomous()) {
+			myDrive.tankDrive(0.0, 0.0, false);
+		}
 	}
 
 	// Contains the auto for placing a cube in the scale from the side.
@@ -51,10 +97,28 @@ public class Autonomous {
 	 *            Defaults false, set true if going or starting on the right.
 	 * @return The value, possibly inverted depending on mirror.
 	 */
-	public double invert(double value, Boolean mirror) {
+	public static double invert(double value, Boolean mirror) {
 		if (mirror) {
 			value = value * -1;
 		}
 		return value;
+	}
+
+	public static void resetEncoders() {
+		// Resets the encoders to 0.
+		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
+		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		leftStart = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();
+		rightStart = Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn();
+	}
+
+	public static int actualValue(int startingValue, int readValue) {
+		return readValue - startingValue;
 	}
 }

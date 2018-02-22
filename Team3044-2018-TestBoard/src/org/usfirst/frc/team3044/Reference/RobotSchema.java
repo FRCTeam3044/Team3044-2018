@@ -22,12 +22,6 @@ public class RobotSchema {
 
 		// map.put("example", new SolenoidDefinition(61,4));
 
-		// Intake
-		map.put("pistonLeft", new SolenoidDefinition(61, 1));
-		map.put("pistonRight", new SolenoidDefinition(61, 2));
-		map.put("elevatorBrake", new SolenoidDefinition(61, 3));
-
-
 		return map;
 
 	}

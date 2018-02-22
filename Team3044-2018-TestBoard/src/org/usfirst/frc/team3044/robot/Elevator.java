@@ -1,7 +1,7 @@
 /**Justin Sheehan
  * 1/27/18
  * FRC Team 3044
- * Raises and lowers the elevator using the Y and A buttons.
+ * Raises and lowers the elevator and activates the piston that stops the chain when we have climbed fully.
  */
 
 package org.usfirst.frc.team3044.robot;
@@ -10,57 +10,87 @@ import org.usfirst.frc.team3044.Reference.*;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Elevator {
 
-	// Calls on second controller from SecondController and on talons for the elevator from Effectors.
+	// Calls on second controller from SecondController and on talons for the
+	// elevator from Effectors.
 	SecondController controller = SecondController.getInstance();
-	public WPI_TalonSRX elevator1;
-	public WPI_TalonSRX elevator2;
-	public Solenoid elevatorBrake;
+	public static WPI_TalonSRX elevator1;
+	public static WPI_TalonSRX elevator2;
+	public DoubleSolenoid elevatorBrake;
+	public DigitalInput elevatorLimit;
 	private Effectors comp = Effectors.getInstance();
-	private boolean toggle;
+	private boolean brakeToggle;
+	private static int elevatorStart;
+	private static double y2;
 
 	public void elevatorInit() {
 		elevator1 = comp.elevator1;
 		elevator2 = comp.elevator2;
 		elevatorBrake = comp.elevatorBrake;
-		toggle = false;
+		elevatorLimit = comp.elevatorLimit;
+		brakeToggle = false;
 	}
 
 	public void elevatorPeriodic() {
-		moveElevator();
+		y2 = controller.getRightY();
+
+		testLimitSwitch();
 		brakeElevator();
+		moveElevator();
 	}
 
-	private void moveElevator() {
-		if (toggle == true) {
-			elevator1.set(0);
-			elevator2.set(0);
-			// Raises elevator up when Y button is pressed.
-		} else if (controller.getRawButton(SecondController.BUTTON_Y)) {
-			elevator1.set(0.5);
-			elevator2.set(-0.5);
-
-			// Lowers elevator when the A button is pressed if the Y button is not being pressed.
-		} else if (controller.getRawButton(SecondController.BUTTON_A)) {
-			elevator1.set(-0.5);
-			elevator2.set(0.5);
-
-			// Turns off all power to elevator motors if neither button is pressed.
-		} else {
-			elevator1.set(0);
-			elevator2.set(0);
+	private void testLimitSwitch() {
+		if (elevatorLimit.get()) {
+			resetEncoders();
+			if (y2 < 0) {
+				y2 = 0;
+			}
 		}
 	}
 
 	private void brakeElevator() {
-		// Activates the brake if the B button is pressesd, disengages it otherwise.
-		if (controller.getRawButton(SecondController.BUTTON_B)) {
-			toggle = !toggle;
+		// Toggles the brake when X button is pressed.
+		if (controller.getRawButton(SecondController.BUTTON_X)) {
+			brakeToggle = !brakeToggle;
 		}
 
-		elevatorBrake.set(toggle);
+		if (brakeToggle) {
+			elevatorBrake.set(DoubleSolenoid.Value.kForward);
+		} else {
+			elevatorBrake.set(DoubleSolenoid.Value.kReverse);
+		}
+
+	}
+
+	private void moveElevator() {
+		// Stops the elevator from moving if the brake toggle is pressed.
+		if (brakeToggle == true) {
+			elevator1.set(0);
+			elevator2.set(0);
+		// Moves elevator if brake toggle is not activated
+		} else {
+			elevator1.set(y2);
+			elevator2.set(-y2);
+		}
+	}
+
+	public static void resetEncoders() {
+		// Resets the encoder to 0.
+		Effectors.getInstance().elevator1.setSelectedSensorPosition(0, 0, 0);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		elevatorStart = Effectors.getInstance().elevator1.getSensorCollection().getAnalogIn();
+	}
+	
+	public static int actualValue(int startingValue, int readValue) {
+		return readValue - startingValue;
 	}
 }
