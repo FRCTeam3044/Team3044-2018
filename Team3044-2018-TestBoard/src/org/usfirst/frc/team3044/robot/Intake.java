@@ -43,8 +43,8 @@ public class Intake {
 
 	// Function to take the block in and out, values doubled to get to full power faster.
 	void intakeWheels(double speed) {
-		leftSweep.set(speed * 2);
-		rightSweep.set(-speed * 2);
+		leftSweep.set(-speed * 2);
+		rightSweep.set(speed * 2);
 	}
 
 	// Function to open and close the intake arms. Defaults closes, only opens on button press.

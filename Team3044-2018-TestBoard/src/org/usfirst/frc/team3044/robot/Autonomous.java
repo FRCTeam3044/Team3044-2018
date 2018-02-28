@@ -52,31 +52,61 @@ public class Autonomous {
 
 	// Contains the auto for placing a cube in the switch from the center.
 	public static void centerSwitch(Boolean mirror) {
-		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 2000) {
-			//myDrive.tankDrive(.5, .5, false);
-			comp.leftFrontDrive.set(ControlMode.Velocity, .2 * 4096 * 500.0 / 600);
-			comp.rightFrontDrive.set(ControlMode.Velocity, -.2 * 4096 * 500.0 / 600);
+		/*
+		 * while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 2000) {
+		 * //myDrive.tankDrive(.5, .5, false);
+		 * comp.leftFrontDrive.set(ControlMode.Velocity, .2 * 4096 * 500.0 / 600);
+		 * comp.rightFrontDrive.set(ControlMode.Velocity, -.2 * 4096 * 500.0 / 600);
+		 * }
+		 * resetEncoders();
+		 * while (Math.abs(actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 450) {
+		 * //myDrive.tankDrive(invert(-.5, mirror), invert(.5, mirror), false);
+		 * comp.leftFrontDrive.set(ControlMode.Velocity, -.2 * 4096 * 500.0 / 600);
+		 * comp.rightFrontDrive.set(ControlMode.Velocity, -.2 * 4096 * 500.0 / 600);
+		 * }
+		 * while (comp.ds.isAutonomous()) {
+		 * myDrive.tankDrive(0.0, 0.0, false);
+		 * }
+		 */
+		resetEncoders();
+		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 5000) {
+			myDrive.tankDrive(.5, .56, false);
 		}
 		resetEncoders();
-		while (Math.abs(actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 450) {
-			//myDrive.tankDrive(invert(-.5, mirror), invert(.5, mirror), false);
-			comp.leftFrontDrive.set(ControlMode.Velocity, -.2 * 4096 * 500.0 / 600);
-			comp.rightFrontDrive.set(ControlMode.Velocity, -.2 * 4096 * 500.0 / 600);
+		while (Math.abs(actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 300) {
+			myDrive.tankDrive(invert(-.5, mirror), invert(.5, mirror), false);
+		}
+		resetEncoders();
+		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 500) {
+			myDrive.tankDrive(.5, .56, false);
+		}
+		resetEncoders();
+		while (Math.abs(actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 300) {
+			myDrive.tankDrive(invert(.5, mirror), invert(-.5, mirror), false);
+		}
+		resetEncoders();
+		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 500) {
+			myDrive.tankDrive(.5, .56, false);
 		}
 		while (comp.ds.isAutonomous()) {
 			myDrive.tankDrive(0.0, 0.0, false);
 		}
+
 	}
 
 	// Contains the auto for placing a cube in the switch from the side.
 	public static void sideSwitch(Boolean mirror) {
 		resetEncoders();
 		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 5000) {
-			myDrive.tankDrive(.5, .5, false);
+			myDrive.tankDrive(.5, .56, false);
 		}
 		resetEncoders();
-		while (Math.abs(actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 900) {
+		while (Math.abs(actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 300) {
 			myDrive.tankDrive(invert(.5, mirror), invert(-.5, mirror), false);
+		}
+		resetEncoders();
+		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 500) {
+			myDrive.tankDrive(.5, .56, false);
 		}
 		while (comp.ds.isAutonomous()) {
 			myDrive.tankDrive(0.0, 0.0, false);

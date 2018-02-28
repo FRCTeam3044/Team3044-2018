@@ -2,6 +2,8 @@ package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.Effectors;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -59,6 +61,11 @@ public class Robot extends IterativeRobot {
 
 		// Gets the string from FMS that has the position of switch and scale.
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		
+		comp.leftFrontDrive.setNeutralMode(NeutralMode.Brake);
+		comp.rightFrontDrive.setNeutralMode(NeutralMode.Brake);
+		comp.leftBackDrive.setNeutralMode(NeutralMode.Brake);
+		comp.rightBackDrive.setNeutralMode(NeutralMode.Brake);
 	}
 
 	/**
@@ -129,6 +136,10 @@ public class Robot extends IterativeRobot {
 		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		Autonomous.time.reset();
 
+		comp.leftFrontDrive.setNeutralMode(NeutralMode.Coast);
+		comp.rightFrontDrive.setNeutralMode(NeutralMode.Coast);
+		comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
+		comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
 	}
 
 	/**
