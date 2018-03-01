@@ -7,8 +7,6 @@ package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.*;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
@@ -115,7 +113,7 @@ public class Autonomous {
 
 	// Contains the auto for placing a cube in the scale from the side.
 	public static void sideScale(Boolean mirror) {
-
+		baseline(); // No scale code yet so it will just do baseline.
 	}
 
 	/**
@@ -135,13 +133,13 @@ public class Autonomous {
 	}
 
 	public static void resetEncoders() {
+		myDrive.tankDrive(0.0, 0.0, false);
 		// Resets the encoders to 0.
 		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		leftStart = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();

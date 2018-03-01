@@ -23,6 +23,7 @@ public class Robot extends IterativeRobot {
 	final String startCenter = "Start Center";
 	final String startLeft = "Start Left";
 	final String startRight = "Start Right";
+	final String Baseline = "Baseline";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 
@@ -45,6 +46,7 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Start Center", startCenter);
 		chooser.addObject("Start Left", startLeft);
 		chooser.addObject("Start Right", startRight);
+		chooser.addObject("Baseline", Baseline);
 		SmartDashboard.putData("Auto choices", chooser);
 
 		CameraServer.getInstance().startAutomaticCapture().setResolution(640, 480);
@@ -61,7 +63,7 @@ public class Robot extends IterativeRobot {
 
 		// Gets the string from FMS that has the position of switch and scale.
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		
+
 		comp.leftFrontDrive.setNeutralMode(NeutralMode.Brake);
 		comp.rightFrontDrive.setNeutralMode(NeutralMode.Brake);
 		comp.leftBackDrive.setNeutralMode(NeutralMode.Brake);
@@ -121,6 +123,10 @@ public class Robot extends IterativeRobot {
 				Autonomous.baseline();
 			}
 			break;
+
+		case Baseline:
+			Autonomous.baseline();
+			break;
 		}
 	}
 
@@ -156,7 +162,7 @@ public class Robot extends IterativeRobot {
 		int wristEncoderPos = Effectors.getInstance().wristMotor.getSensorCollection().getAnalogIn();
 		SmartDashboard.putString("DB/String 4", "wristEncoderPos: " + String.valueOf(wristEncoderPos));
 
-		SmartDashboard.putString("DB/String 9", "current of 0: " + String.valueOf(comp.pdp.getTotalCurrent()));
+		SmartDashboard.putString("DB/String 9", "current: " + String.valueOf(comp.pdp.getTotalCurrent()));
 
 		drive.drivePeriodic();
 		elevator.elevatorPeriodic();
