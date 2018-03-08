@@ -6,7 +6,6 @@ package org.usfirst.frc.team3044.robot;
 import org.usfirst.frc.team3044.Reference.*;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.PIDController;
 
 public class Drive {
 	FirstController firstController = FirstController.getInstance();
@@ -14,8 +13,8 @@ public class Drive {
 
 	DifferentialDrive myDrive;
 
-	PIDController leftPID;
-	PIDController rightPID;
+	// PIDController leftPID;
+	// PIDController rightPID;
 
 	public void driveInit() {
 		// Calls on the WPIlib DifferentialDrive from Effectors.
@@ -28,8 +27,8 @@ public class Drive {
 
 	public void drivePeriodic() {
 		// Names and defines values used to read the input from the joysticks of the first controller.
-		double y1 = firstController.getLeftY();
-		double y2 = firstController.getRightY();
+		double y1 = .8 * firstController.getLeftY();
+		double y2 = .8 * firstController.getRightY();
 
 		// Calls the function that runs the tank drive and uses values from the joysticks.
 		builtInDrive(-y1, -y2);

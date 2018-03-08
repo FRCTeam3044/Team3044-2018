@@ -86,12 +86,6 @@ public class Effectors {
 		leftBackDrive.follow(leftFrontDrive);
 		rightBackDrive.follow(rightFrontDrive);
 
-		// Sets the talons to coast mode so we don't tip when stopping.
-		leftFrontDrive.setNeutralMode(NeutralMode.Coast);
-		rightFrontDrive.setNeutralMode(NeutralMode.Coast);
-		leftBackDrive.setNeutralMode(NeutralMode.Coast);
-		rightBackDrive.setNeutralMode(NeutralMode.Coast);
-
 		// Increases the time taken for the motors to go from 0 to full.
 		leftFrontDrive.configOpenloopRamp(.2, 10);
 		rightFrontDrive.configOpenloopRamp(.2, 10);
@@ -102,27 +96,27 @@ public class Effectors {
 		leftFrontDrive.setSensorPhase(true);
 		rightFrontDrive.setSensorPhase(true);
 
-		/* set the peak, nominal outputs, and deadband */
+		/* set the peak, nominal outputs, and deadband 
 		leftFrontDrive.configNominalOutputForward(0, PIDTimeout);
 		leftFrontDrive.configNominalOutputReverse(0, PIDTimeout);
 		leftFrontDrive.configPeakOutputForward(1, PIDTimeout);
 		leftFrontDrive.configPeakOutputReverse(-1, PIDTimeout);
-		/* set the peak, nominal outputs, and deadband */
+		 set the peak, nominal outputs, and deadband 
 		rightFrontDrive.configNominalOutputForward(0, PIDTimeout);
 		rightFrontDrive.configNominalOutputReverse(0, PIDTimeout);
 		rightFrontDrive.configPeakOutputForward(1, PIDTimeout);
 		rightFrontDrive.configPeakOutputReverse(-1, PIDTimeout);
 
-		/* set closed loop gains in slot0 */
+		 set closed loop gains in slot0 
 		leftFrontDrive.config_kF(0, 0.34, PIDTimeout);
 		leftFrontDrive.config_kP(0, 0.2, PIDTimeout);
 		leftFrontDrive.config_kI(0, 0, PIDTimeout);
 		leftFrontDrive.config_kD(0, 0, PIDTimeout);
-		/* set closed loop gains in slot0 */
+		 set closed loop gains in slot0 
 		rightFrontDrive.config_kF(0, 0.34, PIDTimeout);
 		rightFrontDrive.config_kP(0, 0.2, PIDTimeout);
 		rightFrontDrive.config_kI(0, 0, PIDTimeout);
-		rightFrontDrive.config_kD(0, 0, PIDTimeout);
+		rightFrontDrive.config_kD(0, 0, PIDTimeout);*/
 
 		// Sets groups for drive talons to later be used in the WPI tank drive,
 		// not needed with the talon follower.
@@ -147,7 +141,7 @@ public class Effectors {
 		elevator2.setNeutralMode(NeutralMode.Brake);
 
 		// Sets the encoder for the elevator.
-		elevator1.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
+		elevator2.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
 
 		// Initializes the limit switch.
 		elevatorLimit = new DigitalInput(1);

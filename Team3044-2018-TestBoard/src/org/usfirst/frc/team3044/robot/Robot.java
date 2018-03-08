@@ -41,6 +41,7 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		// Initializes effectors.
 		Effectors.getInstance().init();
+		elevator.elevatorInit();
 
 		// Sends the auto choices to the dashboard.
 		chooser.addDefault("Start Center", startCenter);
@@ -56,6 +57,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		autonomous.autonomousInit();
+		elevator.brakeToggle = false;
+		// TODO: Can elevator.elevatorInit(); be called twice? Here and robot or teleop init? I just want to reset the brake piston.
 
 		// Gets the autonomous mode that has been selected and prints it out.
 		autoSelected = chooser.getSelected();
@@ -63,6 +66,7 @@ public class Robot extends IterativeRobot {
 
 		// Gets the string from FMS that has the position of switch and scale.
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		SmartDashboard.putString("DB/String 6", "Game data: " + String.valueOf(gameData));
 
 		comp.leftFrontDrive.setNeutralMode(NeutralMode.Brake);
 		comp.rightFrontDrive.setNeutralMode(NeutralMode.Brake);
@@ -75,8 +79,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		double value = SmartDashboard.getNumber("DB/Slider 0", 0); // This could be used for an autonomous delay.
-
 		// The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
 
 		/*
@@ -134,7 +136,6 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		drive.driveInit();
-		elevator.elevatorInit();
 		intake.intakeInit();
 
 		// Resets the encoders and timer.
@@ -142,10 +143,10 @@ public class Robot extends IterativeRobot {
 		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		Autonomous.time.reset();
 
-		comp.leftFrontDrive.setNeutralMode(NeutralMode.Coast);
-		comp.rightFrontDrive.setNeutralMode(NeutralMode.Coast);
-		comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
-		comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
+		comp.leftFrontDrive.setNeutralMode(NeutralMode.Brake);
+		comp.rightFrontDrive.setNeutralMode(NeutralMode.Brake);
+		comp.leftBackDrive.setNeutralMode(NeutralMode.Brake);
+		comp.rightBackDrive.setNeutralMode(NeutralMode.Brake);
 	}
 
 	/**
@@ -155,14 +156,15 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		// For testing encoders, will be moved to a different class.
-		int leftAnalogPos = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();
-		SmartDashboard.putString("DB/String 2", "leftAnalogPos: " + String.valueOf(leftAnalogPos));
-		int rightAnalogPos = Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn();
-		SmartDashboard.putString("DB/String 3", "rightAnalogPos: " + String.valueOf(rightAnalogPos));
-		int wristEncoderPos = Effectors.getInstance().wristMotor.getSensorCollection().getAnalogIn();
-		SmartDashboard.putString("DB/String 4", "wristEncoderPos: " + String.valueOf(wristEncoderPos));
-
-		SmartDashboard.putString("DB/String 9", "current: " + String.valueOf(comp.pdp.getTotalCurrent()));
+		/*
+		 * int leftAnalogPos = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();
+		 * SmartDashboard.putString("DB/String 2", "leftAnalogPos: " + String.valueOf(leftAnalogPos));
+		 * int rightAnalogPos = Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn();
+		 * SmartDashboard.putString("DB/String 3", "rightAnalogPos: " + String.valueOf(rightAnalogPos));
+		 * int wristEncoderPos = Effectors.getInstance().wristMotor.getSensorCollection().getAnalogIn();
+		 * SmartDashboard.putString("DB/String 4", "wristEncoderPos: " + String.valueOf(wristEncoderPos));
+		 */
+		SmartDashboard.putString("DB/String 9", "Current: " + String.valueOf(comp.pdp.getTotalCurrent()));
 
 		drive.drivePeriodic();
 		elevator.elevatorPeriodic();
@@ -181,6 +183,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledPeriodic() {
 		SmartDashboard.putString("DB/String 0", "Auto: " + String.valueOf(chooser.getSelected()));
+		SmartDashboard.putString("DB/String 5", "Delay: " + String.valueOf(SmartDashboard.getNumber("DB/Slider 0", 0)));
 
 	}
 }

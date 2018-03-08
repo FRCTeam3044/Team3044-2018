@@ -9,6 +9,7 @@ import org.usfirst.frc.team3044.Reference.*;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Autonomous {
 	public static Effectors comp = Effectors.getInstance();
@@ -20,6 +21,9 @@ public class Autonomous {
 
 	static int leftStart;
 	static int rightStart;
+
+	// Read from slider 0, input can only be 0-10, delays the start of baseline execution.
+	static double delay;
 
 	// Sets the auto states to 0, not needed unless we use switch statements.
 	/*
@@ -38,11 +42,21 @@ public class Autonomous {
 		 */
 		time.reset();
 		time.start();
+
+		delay = SmartDashboard.getNumber("DB/Slider 0", 0);
+		if (delay > 10) {
+			delay = 10;
+		} else if (delay < 0) {
+			delay = 0;
+		}
 	}
 
 	// Contains the auto for crossing the baseline.
 	public static void baseline() {
-		while (time.get() < 2) {
+		while (time.get() < delay) {
+			myDrive.tankDrive(0, 0, false);
+		}
+		while (time.get() < delay + 2) {
 			myDrive.tankDrive(.5, .5, false);
 		}
 		myDrive.tankDrive(0.0, 0.0, false);
