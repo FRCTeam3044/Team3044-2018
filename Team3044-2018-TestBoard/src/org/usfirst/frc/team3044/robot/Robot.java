@@ -2,6 +2,8 @@ package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.Effectors;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -22,6 +24,7 @@ public class Robot extends IterativeRobot {
 	final String startCenter = "Start Center";
 	final String startLeft = "Start Left";
 	final String startRight = "Start Right";
+	final String Baseline = "Baseline";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 
@@ -44,9 +47,11 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Start Center", startCenter);
 		chooser.addObject("Start Left", startLeft);
 		chooser.addObject("Start Right", startRight);
+		chooser.addObject("Baseline", Baseline);
 		SmartDashboard.putData("Auto choices", chooser);
-		
+
 		CameraServer.getInstance().startAutomaticCapture().setResolution(640, 480);
+
 	}
 
 	@Override
@@ -59,6 +64,11 @@ public class Robot extends IterativeRobot {
 
 		// Gets the string from FMS that has the position of switch and scale.
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
+
+		comp.leftFrontDrive.setNeutralMode(NeutralMode.Brake);
+		comp.rightFrontDrive.setNeutralMode(NeutralMode.Brake);
+		comp.leftBackDrive.setNeutralMode(NeutralMode.Brake);
+		comp.rightBackDrive.setNeutralMode(NeutralMode.Brake);
 	}
 
 	/**
@@ -66,6 +76,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		double value = SmartDashboard.getNumber("DB/Slider 0", 0); // This could be used for an autonomous delay.
+
 		// The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
 
 		/*
@@ -112,6 +124,10 @@ public class Robot extends IterativeRobot {
 				Autonomous.baseline();
 			}
 			break;
+
+		case Baseline:
+			Autonomous.baseline();
+			break;
 		}
 	}
 
@@ -127,6 +143,11 @@ public class Robot extends IterativeRobot {
 		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		Autonomous.time.reset();
+
+		comp.leftFrontDrive.setNeutralMode(NeutralMode.Coast);
+		comp.rightFrontDrive.setNeutralMode(NeutralMode.Coast);
+		comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
+		comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
 	}
 
 	/**
@@ -143,12 +164,11 @@ public class Robot extends IterativeRobot {
 		int wristEncoderPos = Effectors.getInstance().wristMotor.getSensorCollection().getAnalogIn();
 		SmartDashboard.putString("DB/String 4", "wristEncoderPos: " + String.valueOf(wristEncoderPos));
 
-		SmartDashboard.putString("DB/String 10", "current of 0: " + String.valueOf(comp.pdp.getTotalCurrent()));
+		SmartDashboard.putString("DB/String 9", "current: " + String.valueOf(comp.pdp.getTotalCurrent()));
 
 		drive.drivePeriodic();
 		elevator.elevatorPeriodic();
 		intake.intakePeriodic();
-
 	}
 
 	/**
@@ -156,12 +176,13 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-		// Not working.
+		// This actually does work. You just have to run the java dashboard.
 		LiveWindow.run();
 	}
 
 	@Override
 	public void disabledPeriodic() {
+		SmartDashboard.putString("DB/String 0", "Auto: " + String.valueOf(chooser.getSelected()));
 
 	}
 }

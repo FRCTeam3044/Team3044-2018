@@ -148,6 +148,10 @@ public class Effectors {
 		elevator2 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator2"));
 		elevatorBrake = new DoubleSolenoid(61, 2, 3);
 
+		// Puts the elevator motors in brake mode so they stay where they are when not being used.
+		elevator1.setNeutralMode(NeutralMode.Brake);
+		elevator2.setNeutralMode(NeutralMode.Brake);
+
 		// Sets the encoder for the elevator.
 		elevator1.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
 
@@ -160,10 +164,8 @@ public class Effectors {
 		intakePiston = new DoubleSolenoid(61, 0, 1);
 		wristMotor = new WPI_TalonSRX(robotSchema.canTalonMap.get("wristMotor"));
 
-		wristMotor.setNeutralMode(NeutralMode.Brake); // Puts the wrist motor in
-														// brake mode so it
-														// stays where it is
-														// when not being used.
+		// Puts the wrist motor in brake mode so it stays where it is when not being used.
+		wristMotor.setNeutralMode(NeutralMode.Brake);
 
 		// For the encoder plugged into the talon, untested at this point.
 		wristMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);

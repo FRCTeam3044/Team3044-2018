@@ -33,11 +33,6 @@ public class Drive {
 
 		// Calls the function that runs the tank drive and uses values from the joysticks.
 		builtInDrive(-y1, -y2);
-
-		// slider=dash.getNumber("DB/Slider 0", 0);
-		// double testSpeed = SmartDashboard.getNumber("DB/Slider 1", 0.9); // TODO: Not working.
-		// System.out.println(testSpeed);
-
 	}
 
 	public void builtInDrive(double y1, double y2) {
@@ -47,9 +42,9 @@ public class Drive {
 
 		// If not, we'll need to use this.
 		// Sets power to the motor groups from Effectors based on the input values from the sticks.
-		 myDrive.tankDrive(y1, y2, true);
+		myDrive.tankDrive(y1, y2, true);
 		// myDrive.arcadeDrive(y1, firstController.getRightX(), true);
-		//comp.leftFrontDrive.set(ControlMode.Velocity, y1 * 4096 * 500.0 / 600);
-		//comp.rightFrontDrive.set(ControlMode.Velocity, -y2 * 4096 * 500.0 / 600);
+		// comp.leftFrontDrive.set(ControlMode.Velocity, y1 * 4096 * 500.0 / 600);
+		// comp.rightFrontDrive.set(ControlMode.Velocity, -y2 * 4096 * 500.0 / 600);
 	}
 }
