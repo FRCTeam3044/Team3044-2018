@@ -65,7 +65,7 @@ public class Autonomous {
 			myDrive.tankDrive(0, 0, false);
 		}
 		while (time.get() < delay + 2) {
-			myDrive.tankDrive(.5, .5, false);
+			myDrive.tankDrive(.5, .6, false);
 		}
 		myDrive.tankDrive(0.0, 0.0, false);
 	}
@@ -149,6 +149,9 @@ public class Autonomous {
 			break;
 		case 0:
 			drive(.5, .5, 2500, 0);
+			if (Elevator.elevatorEncoder() < 300) {// TODO: Get correct number.
+				Elevator.moveElevator(.5);
+			}
 			break;
 		case 1:
 
