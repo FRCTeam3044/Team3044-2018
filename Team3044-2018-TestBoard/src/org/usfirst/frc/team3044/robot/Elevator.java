@@ -23,7 +23,7 @@ public class Elevator {
 	public DoubleSolenoid elevatorBrake;
 	public DigitalInput elevatorLimit;
 	private Effectors comp = Effectors.getInstance();
-	private boolean brakeToggle;
+	public boolean brakeToggle;
 	private static int elevatorStart;
 	private static double y2;
 
@@ -38,7 +38,7 @@ public class Elevator {
 	public void elevatorPeriodic() {
 		y2 = controller.getRightY();
 
-		testLimitSwitch();
+		// testLimitSwitch();
 		brakeElevator();
 		moveElevator();
 	}
@@ -55,7 +55,10 @@ public class Elevator {
 	private void brakeElevator() {
 		// Toggles the brake when X button is pressed.
 		if (controller.getRawButton(SecondController.BUTTON_X)) {
-			brakeToggle = !brakeToggle;
+			brakeToggle = true;
+
+		} else {
+			brakeToggle = false;
 		}
 
 		if (brakeToggle) {
@@ -71,7 +74,7 @@ public class Elevator {
 		if (brakeToggle == true) {
 			elevator1.set(0);
 			elevator2.set(0);
-		// Moves elevator if brake toggle is not activated
+			// Moves elevator if brake toggle is not activated
 		} else {
 			elevator1.set(y2);
 			elevator2.set(-y2);
@@ -80,16 +83,15 @@ public class Elevator {
 
 	public static void resetEncoders() {
 		// Resets the encoder to 0.
-		Effectors.getInstance().elevator1.setSelectedSensorPosition(0, 0, 0);
+		Effectors.getInstance().elevator2.setSelectedSensorPosition(0, 0, 0);
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		elevatorStart = Effectors.getInstance().elevator1.getSensorCollection().getAnalogIn();
+		elevatorStart = Effectors.getInstance().elevator2.getSensorCollection().getAnalogIn();
 	}
-	
+
 	public static int actualValue(int startingValue, int readValue) {
 		return readValue - startingValue;
 	}
