@@ -7,6 +7,7 @@ package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.*;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,10 +19,15 @@ public class Autonomous {
 
 	// Creates a timer that can be used to trigger the next event.
 	static Timer time = new Timer();
+	static int state;
+
+	static double leftSetSpeed;
+	static double rightSetSpeed;
 
 	static int leftStart;
 	static int rightStart;
 
+	static boolean mirror = false;
 	// Read from slider 0, input can only be 0-10, delays the start of baseline execution.
 	static double delay;
 
@@ -34,12 +40,14 @@ public class Autonomous {
 
 	public void autonomousInit() {
 		myDrive = comp.myDrive;
+		state = 0;
 
 		/*
 		 * baseline = 0;
 		 * centerSwitch = 0;
 		 * sideScale = 0;
 		 */
+		resetEncoders();
 		time.reset();
 		time.start();
 
@@ -63,7 +71,7 @@ public class Autonomous {
 	}
 
 	// Contains the auto for placing a cube in the switch from the center.
-	public static void centerSwitch(Boolean mirror) {
+	public static void centerSwitch() {
 		/*
 		 * while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 2000) {
 		 * //myDrive.tankDrive(.5, .5, false);
@@ -81,25 +89,29 @@ public class Autonomous {
 		 * }
 		 */
 		resetEncoders();
-		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 5000) {
+		while (comp.actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 2500) {
 			myDrive.tankDrive(.5, .56, false);
 		}
 		resetEncoders();
-		while (Math.abs(actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 300) {
-			myDrive.tankDrive(invert(-.5, mirror), invert(.5, mirror), false);
+		while (Math.abs(comp.actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 300) {
+			myDrive.tankDrive(invert(-.5), invert(.5), false);
 		}
 		resetEncoders();
-		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 500) {
+		while (comp.actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 500) {
 			myDrive.tankDrive(.5, .56, false);
 		}
 		resetEncoders();
-		while (Math.abs(actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 300) {
-			myDrive.tankDrive(invert(.5, mirror), invert(-.5, mirror), false);
+		while (comp.actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 300) {
+			myDrive.tankDrive(invert(.5), invert(-.5), false);
 		}
 		resetEncoders();
-		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 500) {
+		elevatorUp();
+		time.reset();
+		time.start();
+		while (comp.actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 500 && time.get() < 2) {
 			myDrive.tankDrive(.5, .56, false);
 		}
+		cubeOut();
 		while (comp.ds.isAutonomous()) {
 			myDrive.tankDrive(0.0, 0.0, false);
 		}
@@ -107,46 +119,66 @@ public class Autonomous {
 	}
 
 	// Contains the auto for placing a cube in the switch from the side.
-	public static void sideSwitch(Boolean mirror) {
+	public static void sideSwitch() {
 		resetEncoders();
-		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 5000) {
-			myDrive.tankDrive(.5, .56, false);
+		while (comp.actualValue(rightStart, Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn()) < 6500) {
+			myDrive.tankDrive(.4, .46, false);
 		}
 		resetEncoders();
-		while (Math.abs(actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn())) < 300) {
-			myDrive.tankDrive(invert(.5, mirror), invert(-.5, mirror), false);
+		while (Math.abs(comp.actualValue(rightStart, Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn())) < 500) {
+			myDrive.tankDrive(invert(.5), invert(-.5), false);
 		}
 		resetEncoders();
-		while (-actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn()) < 500) {
-			myDrive.tankDrive(.5, .56, false);
+		elevatorUp();
+		time.reset();
+		time.start();
+		while (comp.actualValue(rightStart, Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn()) < 500 && time.get() < 2) {
+			myDrive.tankDrive(.2, .26, false);
 		}
+		cubeOut();
 		while (comp.ds.isAutonomous()) {
 			myDrive.tankDrive(0.0, 0.0, false);
 		}
 	}
 
+	public static void test() {
+		switch (state) {
+		default:
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
+			break;
+		case 0:
+			drive(.5, .5, 2500, 0);
+			break;
+		case 1:
+
+		}
+
+		myDrive.tankDrive(leftSetSpeed, rightSetSpeed, false);
+	}
+
 	// Contains the auto for placing a cube in the scale from the side.
-	public static void sideScale(Boolean mirror) {
+	public static void sideScale() {
 		baseline(); // No scale code yet so it will just do baseline.
 	}
 
-	/**
-	 * A function for inverting the speed of a turn for autos that are mirror images.
-	 * 
-	 * @param value
-	 *            The number to invert.
-	 * @param mirror
-	 *            Defaults false, set true if going or starting on the right.
-	 * @return The value, possibly inverted depending on mirror.
-	 */
-	public static double invert(double value, Boolean mirror) {
-		if (mirror) {
-			value = value * -1;
-		}
-		return value;
+	static int leftEncoder() {
+		return comp.actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn());
 	}
 
-	public static void resetEncoders() {
+	static int rightEncoder() {
+		return comp.actualValue(rightStart, Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn());
+	}
+
+	static int average() {
+		return (leftEncoder() + rightEncoder()) / 2;
+	}
+
+	static int difference() {
+		return leftEncoder() - rightEncoder();
+	}
+
+	static void resetEncoders() {
 		myDrive.tankDrive(0.0, 0.0, false);
 		// Resets the encoders to 0.
 		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
@@ -160,7 +192,87 @@ public class Autonomous {
 		rightStart = Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn();
 	}
 
-	public static int actualValue(int startingValue, int readValue) {
-		return readValue - startingValue;
+	/**
+	 * A function that abstracts the details of driving over a distance with an optional timeout(0 is none).
+	 * 
+	 * @param leftSpeed
+	 *            The speed for the left motor(-1 to 1).
+	 * @param rightSpeed
+	 *            The speed for the right motor(-1 to 1).
+	 * @param distance
+	 *            The encoder distance you want to travel.
+	 * @param timeout
+	 *            An optional timeout that will end the driving after the specified time in seconds. 0 is no timeout.
+	 * 
+	 * @author Colin
+	 */
+	static void drive(double leftSpeed, double rightSpeed, int distance, int timeout) {
+		leftSetSpeed = leftSpeed;
+		rightSetSpeed = rightSpeed;
+		if (average() > distance) {
+			resetEncoders();
+			time.reset();
+			time.start();
+			state++;
+		}
+		if (timeout > 0) {
+			if (time.get() >= timeout) {
+				resetEncoders();
+				time.reset();
+				time.start();
+				state++;
+			}
+		}
 	}
+
+	static void turn(double leftSpeed, double rightSpeed, int distance, int timeout) {
+		leftSetSpeed = invert(leftSpeed);
+		rightSetSpeed = invert(rightSpeed);
+		drive(leftSetSpeed, rightSetSpeed, distance, timeout);
+	}
+
+	static void elevatorUp() {
+		time.reset();
+		time.start();
+		while (Elevator.elevatorEncoder() < 200 && time.get() < 2) {
+			myDrive.tankDrive(0.0, 0.0, false);
+			Elevator.moveElevator(.5);
+		}
+	}
+
+	static void cubeOut() {
+		time.reset();
+		time.start();
+		while (time.get() < .5) {
+			comp.wristMotor.set(-0.3);
+		}
+		time.reset();
+		time.start();
+		while (time.get() < 1) {
+			Intake.intakeWheels(1);
+		}
+		Intake.intakeArms(true);
+		time.reset();
+		time.start();
+		while (time.get() < 1) {
+			Intake.intakeWheels(1);
+		}
+	}
+
+	/**
+	 * A function for inverting the speed of a turn for autos that are mirror images. Reads if it is mirror or not from robot.java.
+	 * 
+	 * @param value
+	 *            The number to invert.
+	 * @return The value, possibly inverted depending on mirror.
+	 * 
+	 * @author Colin
+	 */
+	static double invert(double value) {
+		if (mirror) {
+			value = value * -1;
+		}
+		return value;
+	}
+
 }

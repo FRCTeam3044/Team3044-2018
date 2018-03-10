@@ -24,6 +24,7 @@ public class Robot extends IterativeRobot {
 	final String startLeft = "Start Left";
 	final String startRight = "Start Right";
 	final String Baseline = "Baseline";
+	final String Test = "Test";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 
@@ -31,7 +32,7 @@ public class Robot extends IterativeRobot {
 	String gameData;
 
 	// Assumes the robot always starts/goes left in auto, changes to true if right side.
-	Boolean mirror = false;
+	static Boolean mirror = Autonomous.mirror;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -48,6 +49,7 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Start Left", startLeft);
 		chooser.addObject("Start Right", startRight);
 		chooser.addObject("Baseline", Baseline);
+		chooser.addObject("Test", Test);
 		SmartDashboard.putData("Auto choices", chooser);
 
 		CameraServer.getInstance().startAutomaticCapture().setResolution(640, 480);
@@ -57,7 +59,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		autonomous.autonomousInit();
-		elevator.brakeToggle = false;
+		Elevator.brakeToggle = false;
 		// TODO: Can elevator.elevatorInit(); be called twice? Here and robot or teleop init? I just want to reset the brake piston.
 
 		// Gets the autonomous mode that has been selected and prints it out.
@@ -91,21 +93,21 @@ public class Robot extends IterativeRobot {
 		default:
 			if (gameData.charAt(0) == 'L') {
 				// Left auto code
-				Autonomous.centerSwitch(mirror);
+				Autonomous.centerSwitch();
 			} else {
 				// Right auto code
 				mirror = true;
-				Autonomous.centerSwitch(mirror);
+				Autonomous.centerSwitch();
 			}
 			break;
 
 		case startLeft:
 			if (gameData.charAt(0) == 'L') {
 				// Left switch auto code
-				Autonomous.sideSwitch(mirror);
+				Autonomous.sideSwitch();
 			} else if (gameData.charAt(1) == 'L') {
 				// Left scale auto code
-				Autonomous.sideScale(mirror);
+				Autonomous.sideScale();
 			} else {
 				// Something else, maybe cross field, maybe just auto line.
 				Autonomous.baseline();
@@ -116,10 +118,10 @@ public class Robot extends IterativeRobot {
 			mirror = true;
 			if (gameData.charAt(0) == 'R') {
 				// Right switch auto code
-				Autonomous.sideSwitch(mirror);
+				Autonomous.sideSwitch();
 			} else if (gameData.charAt(1) == 'R') {
 				// Right scale auto code
-				Autonomous.sideScale(mirror);
+				Autonomous.sideScale();
 			} else {
 				// Something else, maybe cross field, maybe just auto line.
 				Autonomous.baseline();
@@ -128,6 +130,10 @@ public class Robot extends IterativeRobot {
 
 		case Baseline:
 			Autonomous.baseline();
+			break;
+
+		case Test:
+			Autonomous.test();
 			break;
 		}
 	}
