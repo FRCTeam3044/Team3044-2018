@@ -45,7 +45,7 @@ public class Effectors {
 	public DigitalInput elevatorLimit;
 
 	// Intake
-	public DoubleSolenoid intakePiston;
+	public DoubleSolenoid armsPiston;
 	public WPI_TalonSRX wristMotor;
 	public WPI_TalonSRX leftSweep;
 	public WPI_TalonSRX rightSweep;
@@ -96,27 +96,29 @@ public class Effectors {
 		leftFrontDrive.setSensorPhase(true);
 		rightFrontDrive.setSensorPhase(true);
 
-		/* set the peak, nominal outputs, and deadband 
-		leftFrontDrive.configNominalOutputForward(0, PIDTimeout);
-		leftFrontDrive.configNominalOutputReverse(0, PIDTimeout);
-		leftFrontDrive.configPeakOutputForward(1, PIDTimeout);
-		leftFrontDrive.configPeakOutputReverse(-1, PIDTimeout);
-		 set the peak, nominal outputs, and deadband 
-		rightFrontDrive.configNominalOutputForward(0, PIDTimeout);
-		rightFrontDrive.configNominalOutputReverse(0, PIDTimeout);
-		rightFrontDrive.configPeakOutputForward(1, PIDTimeout);
-		rightFrontDrive.configPeakOutputReverse(-1, PIDTimeout);
-
-		 set closed loop gains in slot0 
-		leftFrontDrive.config_kF(0, 0.34, PIDTimeout);
-		leftFrontDrive.config_kP(0, 0.2, PIDTimeout);
-		leftFrontDrive.config_kI(0, 0, PIDTimeout);
-		leftFrontDrive.config_kD(0, 0, PIDTimeout);
-		 set closed loop gains in slot0 
-		rightFrontDrive.config_kF(0, 0.34, PIDTimeout);
-		rightFrontDrive.config_kP(0, 0.2, PIDTimeout);
-		rightFrontDrive.config_kI(0, 0, PIDTimeout);
-		rightFrontDrive.config_kD(0, 0, PIDTimeout);*/
+		/*
+		 * set the peak, nominal outputs, and deadband
+		 * leftFrontDrive.configNominalOutputForward(0, PIDTimeout);
+		 * leftFrontDrive.configNominalOutputReverse(0, PIDTimeout);
+		 * leftFrontDrive.configPeakOutputForward(1, PIDTimeout);
+		 * leftFrontDrive.configPeakOutputReverse(-1, PIDTimeout);
+		 * set the peak, nominal outputs, and deadband
+		 * rightFrontDrive.configNominalOutputForward(0, PIDTimeout);
+		 * rightFrontDrive.configNominalOutputReverse(0, PIDTimeout);
+		 * rightFrontDrive.configPeakOutputForward(1, PIDTimeout);
+		 * rightFrontDrive.configPeakOutputReverse(-1, PIDTimeout);
+		 * 
+		 * set closed loop gains in slot0
+		 * leftFrontDrive.config_kF(0, 0.34, PIDTimeout);
+		 * leftFrontDrive.config_kP(0, 0.2, PIDTimeout);
+		 * leftFrontDrive.config_kI(0, 0, PIDTimeout);
+		 * leftFrontDrive.config_kD(0, 0, PIDTimeout);
+		 * set closed loop gains in slot0
+		 * rightFrontDrive.config_kF(0, 0.34, PIDTimeout);
+		 * rightFrontDrive.config_kP(0, 0.2, PIDTimeout);
+		 * rightFrontDrive.config_kI(0, 0, PIDTimeout);
+		 * rightFrontDrive.config_kD(0, 0, PIDTimeout);
+		 */
 
 		// Sets groups for drive talons to later be used in the WPI tank drive,
 		// not needed with the talon follower.
@@ -149,14 +151,8 @@ public class Effectors {
 		// Sets talons and solenoids used to open, close and pull in the intake
 		leftSweep = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftSweep"));
 		rightSweep = new WPI_TalonSRX(robotSchema.canTalonMap.get("rightSweep"));
-		intakePiston = new DoubleSolenoid(61, 0, 1);
+		armsPiston = new DoubleSolenoid(61, 0, 1);
 		wristMotor = new WPI_TalonSRX(robotSchema.canTalonMap.get("wristMotor"));
-
-		// Puts the wrist motor in brake mode so it stays where it is when not being used.
-		wristMotor.setNeutralMode(NeutralMode.Brake);
-
-		// For the encoder plugged into the talon, untested at this point.
-		wristMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
 
 		leftSweep.configNeutralDeadband(2, 10);
 		rightSweep.configNeutralDeadband(2, 10);
@@ -164,5 +160,9 @@ public class Effectors {
 		// example = new
 		// Solenoid(robotSchema.solenoidMap.get("example").talonID,
 		// robotSchema.solenoidMap.get("example").pcmChannel);
+	}
+
+	public int actualValue(int startingValue, int readValue) {
+		return Math.abs(readValue - startingValue);
 	}
 }

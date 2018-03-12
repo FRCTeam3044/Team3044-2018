@@ -22,8 +22,8 @@ public class Elevator {
 	public static WPI_TalonSRX elevator2;
 	public DoubleSolenoid elevatorBrake;
 	public DigitalInput elevatorLimit;
-	private Effectors comp = Effectors.getInstance();
-	public boolean brakeToggle;
+	private static Effectors comp = Effectors.getInstance();
+	public static boolean brakeToggle;
 	private static int elevatorStart;
 	private static double y2;
 
@@ -33,14 +33,15 @@ public class Elevator {
 		elevatorBrake = comp.elevatorBrake;
 		elevatorLimit = comp.elevatorLimit;
 		brakeToggle = false;
+		resetEncoders();
 	}
 
 	public void elevatorPeriodic() {
 		y2 = controller.getRightY();
 
 		// testLimitSwitch();
-		brakeElevator();
-		moveElevator();
+		brakeElevator(controller.getRawButton(SecondController.BUTTON_X));
+		moveElevator(y2);
 	}
 
 	private void testLimitSwitch() {
@@ -52,9 +53,9 @@ public class Elevator {
 		}
 	}
 
-	private void brakeElevator() {
-		// Toggles the brake when X button is pressed.
-		if (controller.getRawButton(SecondController.BUTTON_X)) {
+	private void brakeElevator(boolean button) {
+		// Engages the brake when a button is held.
+		if (button) {
 			brakeToggle = true;
 
 		} else {
@@ -69,16 +70,20 @@ public class Elevator {
 
 	}
 
-	private void moveElevator() {
+	public static void moveElevator(double speed) {
 		// Stops the elevator from moving if the brake toggle is pressed.
 		if (brakeToggle == true) {
 			elevator1.set(0);
 			elevator2.set(0);
 			// Moves elevator if brake toggle is not activated
 		} else {
-			elevator1.set(y2);
-			elevator2.set(-y2);
+			elevator1.set(speed);
+			elevator2.set(-speed);
 		}
+	}
+
+	public static int elevatorEncoder() {
+		return comp.actualValue(elevatorStart, Effectors.getInstance().elevator2.getSensorCollection().getAnalogIn());
 	}
 
 	public static void resetEncoders() {
@@ -92,7 +97,4 @@ public class Elevator {
 		elevatorStart = Effectors.getInstance().elevator2.getSensorCollection().getAnalogIn();
 	}
 
-	public static int actualValue(int startingValue, int readValue) {
-		return readValue - startingValue;
-	}
 }
