@@ -31,6 +31,8 @@ public class Autonomous {
 	// Read from slider 0, input can only be 0-10, delays the start of baseline execution.
 	static double delay;
 
+	static int SWITCH_HEIGHT; // TODO: Get correct number.
+
 	// Sets the auto states to 0, not needed unless we use switch statements.
 	/*
 	 * int baseline = 0;
@@ -141,23 +143,74 @@ public class Autonomous {
 		}
 	}
 
-	public static void test() {
+	public static void centerRightSwitch() {
 		switch (state) {
 		default:
 			leftSetSpeed = 0;
 			rightSetSpeed = 0;
 			break;
 		case 0:
-			drive(.5, .5, 2500, 0);
-			if (Elevator.elevatorEncoder() < 300) {// TODO: Get correct number.
+			drive(.4, .48, 3000, 0);
+			if (Elevator.elevatorEncoder() < SWITCH_HEIGHT) {
 				Elevator.moveElevator(.5);
 			}
 			break;
 		case 1:
-
+			checkElevator();
+			break;
+		case 2:
+			drive(.3, .38, 1800, 2);
+			break;
+		case 3:
+			cubeOut();
+			break;
 		}
+		myDrive.tankDrive(leftSetSpeed, rightSetSpeed, false);
+	}
+
+	public static void centerLeftSwitch() {
+		switch (state) {
+		default:
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
+			break;
+		case 0:
+			drive(.3, .38, 1000, 0);
+			break;
+		case 1:
+			drive(-.3, .3, 680, 0);
+			break;
+		case 2:
+			drive(.4, .48, 5500, 0);
+			break;
+		case 3:
+			drive(.3, -.3, 680, 0);
+			break;
+		case 4:
+			drive(.3, .38, 1500, 0);
+			if (Elevator.elevatorEncoder() < SWITCH_HEIGHT) {
+				Elevator.moveElevator(.5);
+			}
+			break;
+		case 5:
+			checkElevator();
+			break;
+		case 6:
+			drive(.3, .38, 1500, 2);
+			break;
+		case 7:
+			cubeOut();
+			break;
+		}
+		myDrive.tankDrive(leftSetSpeed, rightSetSpeed, false);
+	}
+
+	public static void test() {
 
 		myDrive.tankDrive(leftSetSpeed, rightSetSpeed, false);
+
+		SmartDashboard.putString("DB/String 1", "Average: " + String.valueOf(average()));
+		SmartDashboard.putString("DB/String 2", "Difference: " + String.valueOf(difference()));
 	}
 
 	// Contains the auto for placing a cube in the scale from the side.
@@ -259,6 +312,15 @@ public class Autonomous {
 		time.start();
 		while (time.get() < 1) {
 			Intake.intakeWheels(1);
+		}
+	}
+
+	static void checkElevator() {
+		if (Elevator.elevatorEncoder() < SWITCH_HEIGHT) {// TODO: Get correct number.
+			Elevator.moveElevator(.5);
+		} else {
+			Elevator.moveElevator(0);
+			state++;
 		}
 	}
 
