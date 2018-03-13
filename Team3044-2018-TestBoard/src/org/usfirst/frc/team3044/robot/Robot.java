@@ -93,11 +93,11 @@ public class Robot extends IterativeRobot {
 		default:
 			if (gameData.charAt(0) == 'L') {
 				// Left auto code
-				Autonomous.centerSwitch();
+				Autonomous.centerLeftSwitch();
 			} else {
 				// Right auto code
 				mirror = true;
-				Autonomous.centerSwitch();
+				Autonomous.centerRightSwitch();
 			}
 			break;
 
