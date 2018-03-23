@@ -4,12 +4,14 @@
 package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.*;
-
+import java.lang.Math;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class Drive {
 	FirstController firstController = FirstController.getInstance();
 	private Effectors comp = Effectors.getInstance();
+	private double height;
+	private double ELEVATOR_MAX_HEIGHT; //TODO: Get max height
 
 	DifferentialDrive myDrive;
 
@@ -24,12 +26,18 @@ public class Drive {
 		// leftPID = new PIDController(1, 1, 1, comp.leftFrontDrive., comp.leftFrontDrive, 50);
 		// rightPID = new PIDController(1, 1, 1, rightEncoder, comp.rightFrontDrive, 50);
 	}
-
+	
 	public void drivePeriodic() {
 		// Names and defines values used to read the input from the joysticks of the first controller.
 		double y1 = .8 * firstController.getLeftY();
 		double y2 = .8 * firstController.getRightY();
 
+		// Reduces the drive speed by the percent elevator height.
+		height = Elevator.elevatorEncoder();
+		y1 = y1 * java.lang.Math.pow(0.25,height/ELEVATOR_MAX_HEIGHT);
+		y2 = y2 * java.lang.Math.pow(0.25,height/ELEVATOR_MAX_HEIGHT);
+		// Formula in readable terms: Multiplies the drive power by 0.25^x, where x is the percent height from 0 to 1.
+		
 		// Calls the function that runs the tank drive and uses values from the joysticks.
 		builtInDrive(-y1, -y2);
 	}
