@@ -33,23 +33,36 @@ public class Intake {
 		// Gets the Y value on the left stick.
 		double y1 = controller.getLeftY();
 
-		// Calls functions that take the block in and out, open and close the intake arms, and move the wrist up and down.
+		// Calls functions that take the block in and out, open and close the intake
+		// arms, and move the wrist up and down.
 		intakeWheels(y1);
-		intakeArms(controller.getRawButton(SecondController.BUTTON_B));
+		intakeArms(controller.getRawButton(SecondController.BUTTON_B),
+				controller.getRawButton(SecondController.BUTTON_A));
 		wristMovement();
 
 	}
 
-	// Function to take the block in and out, values doubled to get to full power faster.
+	// Function to take the block in and out, values doubled to get to full power
+	// faster.
 	public static void intakeWheels(double speed) {
 		leftSweep.set(-speed * 2);
 		rightSweep.set(speed * 2);
 	}
 
-	// Function to open and close the intake arms. Defaults closes, only opens on button press.
-	public static void intakeArms(boolean button) {
+	/**
+	 * Function to open and close the intake arms. Defaults closes, only opens on
+	 * button press.
+	 * 
+	 * @param button
+	 *            True for arms to open with no intake.
+	 * @param autoButton
+	 *            True for arms to open with auto intake, false otherwise.
+	 */
+	public static void intakeArms(boolean button, boolean autoButton) {
 		// Open intake when button is pressed.
 		if (button) {
+			armsPiston.set(DoubleSolenoid.Value.kReverse);
+		} else if (autoButton) {
 			armsPiston.set(DoubleSolenoid.Value.kReverse);
 			if (Math.abs(controller.getLeftY()) < .15) {
 				intakeWheels(-1);
