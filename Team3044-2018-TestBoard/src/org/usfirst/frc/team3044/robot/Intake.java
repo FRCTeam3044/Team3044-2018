@@ -42,7 +42,7 @@ public class Intake {
 
 	// Function to take the block in and out, values doubled to get to full power faster.
 	public static void intakeWheels(double speed) {
-		leftSweep.set(-speed * 2);
+		leftSweep.set(-speed * .9);
 		rightSweep.set(speed * 2);
 	}
 
@@ -52,7 +52,7 @@ public class Intake {
 		if (button) {
 			armsPiston.set(DoubleSolenoid.Value.kReverse);
 			if (Math.abs(controller.getLeftY()) < .15) {
-				intakeWheels(-1);
+				//intakeWheels(1);
 			}
 		} else {// Closes intake when not pressed.
 			armsPiston.set(DoubleSolenoid.Value.kForward);

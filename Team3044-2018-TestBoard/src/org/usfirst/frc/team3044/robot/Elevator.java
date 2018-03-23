@@ -83,7 +83,7 @@ public class Elevator {
 	}
 
 	public static int elevatorEncoder() {
-		return comp.actualValue(elevatorStart, Effectors.getInstance().elevator2.getSensorCollection().getAnalogIn());
+		return Math.abs(comp.actualValue(elevatorStart, Effectors.getInstance().elevator2.getSensorCollection().getQuadraturePosition()));
 	}
 
 	public static void resetEncoders() {
