@@ -27,16 +27,15 @@ public class Autonomous {
 	static int rightStart;
 
 	static boolean mirror = false;
-	// Read from slider 0, input can only be 0-10, delays the start of baseline execution.
+	// Read from slider 0, input can only be 0-10, delays the start of baseline
+	// execution.
 	static double delay;
 
 	static int SWITCH_HEIGHT = 18000;
 
 	// Sets the auto states to 0, not needed unless we use switch statements.
 	/*
-	 * int baseline = 0;
-	 * int centerSwitch = 0;
-	 * int sideScale = 0;
+	 * int baseline = 0; int centerSwitch = 0; int sideScale = 0;
 	 */
 
 	public void autonomousInit() {
@@ -44,9 +43,7 @@ public class Autonomous {
 		state = 0;
 
 		/*
-		 * baseline = 0;
-		 * centerSwitch = 0;
-		 * sideScale = 0;
+		 * baseline = 0; centerSwitch = 0; sideScale = 0;
 		 */
 		resetEncoders();
 		Elevator.resetEncoders();
@@ -71,6 +68,7 @@ public class Autonomous {
 		}
 		myDrive.tankDrive(0.0, 0.0, false);
 	}
+
 
 	// Contains the auto for placing a cube in the switch from the side.
 	public static void sideSwitch() {
@@ -194,7 +192,8 @@ public class Autonomous {
 	}
 
 	static int rightEncoder() {
-		return comp.actualValue(rightStart, Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn());
+		return comp.actualValue(rightStart,
+				Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn());
 	}
 
 	static int average() {
@@ -220,7 +219,8 @@ public class Autonomous {
 	}
 
 	/**
-	 * A function that abstracts the details of driving over a distance with an optional timeout(0 is none).
+	 * A function that abstracts the details of driving over a distance with an
+	 * optional timeout(0 is none).
 	 * 
 	 * @param leftSpeed
 	 *            The speed for the left motor(-1 to 1).
@@ -229,7 +229,8 @@ public class Autonomous {
 	 * @param distance
 	 *            The encoder distance you want to travel.
 	 * @param timeout
-	 *            An optional timeout that will end the driving after the specified time in seconds. 0 is no timeout.
+	 *            An optional timeout that will end the driving after the specified
+	 *            time in seconds. 0 is no timeout.
 	 * 
 	 * @author Colin
 	 */
@@ -279,7 +280,7 @@ public class Autonomous {
 		while (time.get() < 1) {
 			Intake.intakeWheels(-1);
 		}
-		Intake.intakeArms(true);
+		Intake.intakeArms(true, false);
 		time.reset();
 		time.start();
 		while (time.get() < 1) {
@@ -301,7 +302,8 @@ public class Autonomous {
 	}
 
 	/**
-	 * A function for inverting the speed of a turn for autos that are mirror images. Reads if it is mirror or not from robot.java.
+	 * A function for inverting the speed of a turn for autos that are mirror
+	 * images. Reads if it is mirror or not from robot.java.
 	 * 
 	 * @param value
 	 *            The number to invert.
