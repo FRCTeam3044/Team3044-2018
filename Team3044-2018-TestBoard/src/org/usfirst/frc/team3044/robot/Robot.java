@@ -31,9 +31,6 @@ public class Robot extends IterativeRobot {
 	// Data from the FMS about switch and scale placement.
 	String gameData;
 
-	// Assumes the robot always starts/goes left in auto, changes to true if right side.
-	static Boolean mirror = Autonomous.mirror;
-
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -43,6 +40,8 @@ public class Robot extends IterativeRobot {
 		// Initializes effectors.
 		Effectors.getInstance().init();
 		elevator.elevatorInit();
+		drive.driveInit();
+		intake.intakeInit();
 
 		// Sends the auto choices to the dashboard.
 		chooser.addDefault("Start Center", startCenter);
@@ -96,7 +95,7 @@ public class Robot extends IterativeRobot {
 				Autonomous.centerLeftSwitch();
 			} else {
 				// Right auto code
-				mirror = true;
+				Autonomous.mirror = true;
 				Autonomous.centerRightSwitch();
 			}
 			break;
@@ -115,7 +114,7 @@ public class Robot extends IterativeRobot {
 			break;
 
 		case startRight:
-			mirror = true;
+			Autonomous.mirror = true;
 			if (gameData.charAt(0) == 'R') {
 				// Right switch auto code
 				Autonomous.sideSwitch();
@@ -141,12 +140,10 @@ public class Robot extends IterativeRobot {
 	// Initializes subsystems.
 	@Override
 	public void teleopInit() {
-		drive.driveInit();
-		intake.intakeInit();
-
 		// Resets the encoders and timer.
 		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
+		Effectors.getInstance().elevator2.setSelectedSensorPosition(0, 0, 0);
 		Autonomous.time.reset();
 
 		comp.leftFrontDrive.setNeutralMode(NeutralMode.Brake);
@@ -170,6 +167,9 @@ public class Robot extends IterativeRobot {
 		 * int wristEncoderPos = Effectors.getInstance().wristMotor.getSensorCollection().getAnalogIn();
 		 * SmartDashboard.putString("DB/String 4", "wristEncoderPos: " + String.valueOf(wristEncoderPos));
 		 */
+
+		int elevatorEncoderPos = Effectors.getInstance().elevator2.getSensorCollection().getQuadraturePosition();
+		SmartDashboard.putString("DB/String 4", "elevator: " + String.valueOf(elevatorEncoderPos));
 		SmartDashboard.putString("DB/String 9", "Current: " + String.valueOf(comp.pdp.getTotalCurrent()));
 
 		drive.drivePeriodic();
@@ -190,6 +190,9 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {
 		SmartDashboard.putString("DB/String 0", "Auto: " + String.valueOf(chooser.getSelected()));
 		SmartDashboard.putString("DB/String 5", "Delay: " + String.valueOf(SmartDashboard.getNumber("DB/Slider 0", 0)));
+
+		int elevatorEncoderPos = Effectors.getInstance().elevator2.getSensorCollection().getQuadraturePosition();
+		SmartDashboard.putString("DB/String 4", "elevator: " + String.valueOf(elevatorEncoderPos));
 
 	}
 }
