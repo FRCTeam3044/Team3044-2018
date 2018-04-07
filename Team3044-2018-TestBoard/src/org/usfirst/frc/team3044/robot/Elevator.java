@@ -10,7 +10,6 @@ import org.usfirst.frc.team3044.Reference.*;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Elevator {
@@ -21,7 +20,6 @@ public class Elevator {
 	public static WPI_TalonSRX elevator1;
 	public static WPI_TalonSRX elevator2;
 	public DoubleSolenoid elevatorBrake;
-	public DigitalInput elevatorLimit;
 	private static Effectors comp = Effectors.getInstance();
 	public static boolean brakeToggle;
 	private static int elevatorStart;
@@ -31,7 +29,6 @@ public class Elevator {
 		elevator1 = comp.elevator1;
 		elevator2 = comp.elevator2;
 		elevatorBrake = comp.elevatorBrake;
-		elevatorLimit = comp.elevatorLimit;
 		brakeToggle = false;
 		resetEncoders();
 	}
@@ -42,15 +39,6 @@ public class Elevator {
 		// testLimitSwitch();
 		brakeElevator(controller.getRawButton(SecondController.BUTTON_X));
 		moveElevator(y2);
-	}
-
-	private void testLimitSwitch() {
-		if (elevatorLimit.get()) {
-			resetEncoders();
-			if (y2 < 0) {
-				y2 = 0;
-			}
-		}
 	}
 
 	private void brakeElevator(boolean button) {
@@ -90,11 +78,11 @@ public class Elevator {
 		// Resets the encoder to 0.
 		Effectors.getInstance().elevator2.setSelectedSensorPosition(0, 0, 0);
 		try {
-			Thread.sleep(500);
+			Thread.sleep(200); // TODO: Not needed?
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		elevatorStart = Effectors.getInstance().elevator2.getSensorCollection().getAnalogIn();
+		elevatorStart = Effectors.getInstance().elevator2.getSensorCollection().getQuadraturePosition();
 	}
 
 }

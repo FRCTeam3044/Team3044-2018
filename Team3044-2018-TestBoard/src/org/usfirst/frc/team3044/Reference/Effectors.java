@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -42,7 +41,6 @@ public class Effectors {
 	public WPI_TalonSRX elevator1;
 	public WPI_TalonSRX elevator2;
 	public DoubleSolenoid elevatorBrake;
-	public DigitalInput elevatorLimit;
 
 	// Intake
 	public DoubleSolenoid armsPiston;
@@ -129,10 +127,6 @@ public class Effectors {
 		// motors move because of the follower.
 		myDrive = new DifferentialDrive(leftFrontDrive, rightFrontDrive);
 
-		// Defines encoder inputs, maybe not needed if plugged into talon.
-		// elevatorEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-		// wristEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-
 		// Sets talons and solenoid for the elevator.
 		elevator1 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator1"));
 		elevator2 = new WPI_TalonSRX(robotSchema.canTalonMap.get("elevator2"));
@@ -144,9 +138,6 @@ public class Effectors {
 
 		// Sets the encoder for the elevator.
 		elevator2.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
-
-		// Initializes the limit switch.
-		elevatorLimit = new DigitalInput(1);
 
 		// Sets talons and solenoids used to open, close and pull in the intake
 		leftSweep = new WPI_TalonSRX(robotSchema.canTalonMap.get("leftSweep"));

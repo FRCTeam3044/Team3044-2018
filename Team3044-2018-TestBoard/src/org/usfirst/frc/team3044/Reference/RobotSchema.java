@@ -3,7 +3,6 @@ package org.usfirst.frc.team3044.Reference;
 import java.util.Map;
 import java.util.HashMap;
 
-// TODO: Update all talon ID's.
 public class RobotSchema {
 
 	// Creates Talon and Solenoid maps.
@@ -23,7 +22,6 @@ public class RobotSchema {
 		// map.put("example", new SolenoidDefinition(61,4));
 
 		return map;
-
 	}
 
 	private Map<String, Integer> loadCanTalonMap() {
@@ -48,5 +46,4 @@ public class RobotSchema {
 
 		return map;
 	}
-
 }

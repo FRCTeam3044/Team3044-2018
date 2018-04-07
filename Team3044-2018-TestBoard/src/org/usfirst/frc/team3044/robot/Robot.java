@@ -23,6 +23,9 @@ public class Robot extends IterativeRobot {
 	final String startCenter = "Start Center";
 	final String startLeft = "Start Left";
 	final String startRight = "Start Right";
+	final String startCenterTwoCubes = "Start Center Two Cubes";
+	final String startLeftTwoCubes = "Start Left Two Cubes";
+	final String startRightTwoCubes = "Start Right Two Cubes";
 	final String Baseline = "Baseline";
 	final String Test = "Test";
 	String autoSelected;
@@ -47,12 +50,19 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Start Center", startCenter);
 		chooser.addObject("Start Left", startLeft);
 		chooser.addObject("Start Right", startRight);
+		chooser.addDefault("Start Center Two Cubes", startCenterTwoCubes);
+		chooser.addObject("Start Left Two Cubes", startLeftTwoCubes);
+		chooser.addObject("Start Right Two Cubes", startRightTwoCubes);
 		chooser.addObject("Baseline", Baseline);
 		chooser.addObject("Test", Test);
 		SmartDashboard.putData("Auto choices", chooser);
 
 		CameraServer.getInstance().startAutomaticCapture().setResolution(640, 480);
 
+		comp.leftFrontDrive.setNeutralMode(NeutralMode.Coast);
+		comp.rightFrontDrive.setNeutralMode(NeutralMode.Coast);
+		comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
+		comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
 	}
 
 	@Override
@@ -81,6 +91,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		// The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
+
+		Autonomous.delay();
 
 		/*
 		 * This switch statement contains all the autonomous options. The case ran depends on which auto was chosen by the drivers.
@@ -127,6 +139,48 @@ public class Robot extends IterativeRobot {
 			}
 			break;
 
+		case startCenterTwoCubes:
+			if (gameData.charAt(0) == 'L') {
+				// Left auto code
+				Autonomous.centerTwoCubes();
+				;
+			} else {
+				// Right auto code
+				Autonomous.mirror = true;
+				Autonomous.centerTwoCubes();
+				;
+			}
+			break;
+
+		case startLeftTwoCubes:
+			if (gameData.charAt(0) == 'L') {
+				// Left switch auto code
+				Autonomous.sideSwitchTwoCubes();
+				;
+			} else if (gameData.charAt(1) == 'L') {
+				// Left scale auto code
+				Autonomous.sideScale();
+			} else {
+				// Something else, maybe cross field, maybe just auto line.
+				Autonomous.baseline();
+			}
+			break;
+
+		case startRightTwoCubes:
+			Autonomous.mirror = true;
+			if (gameData.charAt(0) == 'R') {
+				// Right switch auto code
+				Autonomous.sideSwitchTwoCubes();
+				;
+			} else if (gameData.charAt(1) == 'R') {
+				// Right scale auto code
+				Autonomous.sideScale();
+			} else {
+				// Something else, maybe cross field, maybe just auto line.
+				Autonomous.baseline();
+			}
+			break;
+
 		case Baseline:
 			Autonomous.baseline();
 			break;
@@ -135,6 +189,7 @@ public class Robot extends IterativeRobot {
 			Autonomous.test();
 			break;
 		}
+		comp.myDrive.tankDrive(Autonomous.leftSetSpeed, Autonomous.rightSetSpeed, false);
 	}
 
 	// Initializes subsystems.
