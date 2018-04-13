@@ -45,12 +45,13 @@ public class Robot extends IterativeRobot {
 		elevator.elevatorInit();
 		drive.driveInit();
 		intake.intakeInit();
+		autonomous.autonomousInit();
 
 		// Sends the auto choices to the dashboard.
 		chooser.addDefault("Start Center", startCenter);
 		chooser.addObject("Start Left", startLeft);
 		chooser.addObject("Start Right", startRight);
-		chooser.addDefault("Start Center Two Cubes", startCenterTwoCubes);
+		chooser.addObject("Start Center Two Cubes", startCenterTwoCubes);
 		chooser.addObject("Start Left Two Cubes", startLeftTwoCubes);
 		chooser.addObject("Start Right Two Cubes", startRightTwoCubes);
 		chooser.addObject("Baseline", Baseline);
@@ -68,8 +69,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		autonomous.autonomousInit();
-		Elevator.brakeToggle = false;
-		// TODO: Can elevator.elevatorInit(); be called twice? Here and robot or teleop init? I just want to reset the brake piston.
+		elevator.elevatorInit();
 
 		// Gets the autonomous mode that has been selected and prints it out.
 		autoSelected = chooser.getSelected();
@@ -242,10 +242,21 @@ public class Robot extends IterativeRobot {
 	}
 
 	@Override
+	public void disabledInit() {
+		Autonomous.resetEncoders();
+		
+		//DON'T USE AT COMPETITION:
+		comp.leftFrontDrive.setNeutralMode(NeutralMode.Coast);
+		comp.rightFrontDrive.setNeutralMode(NeutralMode.Coast);
+		comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
+		comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
+	}
+	@Override
 	public void disabledPeriodic() {
 		SmartDashboard.putString("DB/String 0", "Auto: " + String.valueOf(chooser.getSelected()));
 		SmartDashboard.putString("DB/String 5", "Delay: " + String.valueOf(SmartDashboard.getNumber("DB/Slider 0", 0)));
-
+		
+		SmartDashboard.putString("DB/String 9", "Average: " + String.valueOf(Autonomous.average()));
 		int elevatorEncoderPos = Effectors.getInstance().elevator2.getSensorCollection().getQuadraturePosition();
 		SmartDashboard.putString("DB/String 4", "elevator: " + String.valueOf(elevatorEncoderPos));
 

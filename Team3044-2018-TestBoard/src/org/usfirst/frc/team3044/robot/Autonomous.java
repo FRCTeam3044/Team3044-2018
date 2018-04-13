@@ -33,9 +33,9 @@ public class Autonomous {
 	static boolean delayHappened;
 
 	static int SWITCH_HEIGHT = 18000;
-	static double LEFT_SPEED = .5;
-	static double RIGHT_SPEED = .56;
-	static int TURN_90 = 600;
+	static double LEFT_SPEED = .3;
+	static double RIGHT_SPEED = .38;
+	static int TURN_90 = 1000; // First bot: 600
 
 	public void autonomousInit() {
 		state = -1;
@@ -166,22 +166,6 @@ public class Autonomous {
 		}
 	}
 
-	// For testing anything and everything.
-	public static void test() {
-		switch (state) {
-		default:
-			leftSetSpeed = 0;
-			rightSetSpeed = 0;
-			break;
-		case 0:
-			drive(LEFT_SPEED, RIGHT_SPEED, 5000, 2);
-			break;
-
-		}
-		SmartDashboard.putString("DB/String 1", "Average: " + String.valueOf(average()));
-		SmartDashboard.putString("DB/String 2", "Difference: " + String.valueOf(difference()));
-	}
-
 	// Contains the auto for placing a cube in the scale from the side.
 	public static void sideScale() {
 		baseline(); // No scale code yet so it will just do baseline.
@@ -231,17 +215,70 @@ public class Autonomous {
 	}
 
 	public static void centerGetSecond() {
+		switch (state) {
+		default:
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
+			break;
+		case 0:
+			drive(-LEFT_SPEED, -RIGHT_SPEED, 2910, 0);
+			break;
+		case 1:
+			turn(LEFT_SPEED, -LEFT_SPEED, TURN_90, 0);
+			break;
+		case 2:
+			drive(LEFT_SPEED, RIGHT_SPEED, 2800, 0);
+			break;
+		case 3:
+			turn(-LEFT_SPEED, LEFT_SPEED, TURN_90 - 150, 0);// TODO: Not at competition
+			break;
+		case 4:
+			// Elevator down
+			state++;
+			break;
+		case 5:
+			drive(LEFT_SPEED, RIGHT_SPEED, 1200, 3);
+			cubeIn();
+			break;
+		case 6:
+			drive(-LEFT_SPEED, -RIGHT_SPEED, 200, 3);
+			break;
+		case 7:
+			turn(-LEFT_SPEED, LEFT_SPEED, TURN_90 - 150, 0);// TODO: Not at competition
+			break;
+		case 8:
+			drive(LEFT_SPEED, RIGHT_SPEED, 2800, 0);
+			break;
+		case 9:
+			turn(LEFT_SPEED, -LEFT_SPEED, TURN_90 - 150, 0);// TODO: Not at competition
+			break;
+		case 10:
+			// elevatorUp();
+			state++;
+			break;
+		case 11:
+			drive(LEFT_SPEED, RIGHT_SPEED, 2300, 4);
+			break;
+		case 12:
+			cubeOut();
+			break;
 
+		}
 	}
 
 	public static void sideSwitchGetSecond() {
 
 	}
 
+	// For testing anything and everything.
+	public static void test() {
+		centerGetSecond();
+	}
+
 	// -------------------------------------------------------------------------------------------------------------------------
 	// -------------------------------------------------------------------------------------------------------------------------
 
-	public static void delay() {
+	static void delay() {
 		if (time.get() >= delay && !delayHappened) {
 			state = 0;
 			twoCubeState = 0;
@@ -355,7 +392,7 @@ public class Autonomous {
 	}
 
 	static void cubeIn() {
-
+		// TODO: Write
 	}
 
 	static void checkElevator() {
