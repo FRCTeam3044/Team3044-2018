@@ -27,8 +27,8 @@ public class Drive {
 
 	public void drivePeriodic() {
 		// Names and defines values used to read the input from the joysticks of the first controller.
-		double y1 = .8 * firstController.getLeftY();
-		double y2 = .8 * firstController.getRightY();
+		double y1 = .9 * firstController.getLeftY();
+		double y2 = .9 * firstController.getRightY();
 
 		// Calls the function that runs the tank drive and uses values from the joysticks.
 		builtInDrive(-y1, -y2);

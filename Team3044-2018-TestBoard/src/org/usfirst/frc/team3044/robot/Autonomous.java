@@ -19,6 +19,8 @@ public class Autonomous {
 	// Creates a timer that can be used to trigger the next event.
 	static Timer time = new Timer();
 	static int state;
+	static int twoCubeState;
+	static boolean mirror;
 
 	static double leftSetSpeed;
 	static double rightSetSpeed;
@@ -26,30 +28,29 @@ public class Autonomous {
 	static int leftStart;
 	static int rightStart;
 
-	static boolean mirror = false;
-	// Read from slider 0, input can only be 0-10, delays the start of baseline
-	// execution.
+	// Read from slider 0, input can only be 0-10, delays the start of any auto execution.
 	static double delay;
+	static boolean delayHappened;
 
 	static int SWITCH_HEIGHT = 18000;
-
-	// Sets the auto states to 0, not needed unless we use switch statements.
-	/*
-	 * int baseline = 0; int centerSwitch = 0; int sideScale = 0;
-	 */
+	static double LEFT_SPEED = .5;
+	static double RIGHT_SPEED = .56;
+	static int TURN_90 = 600;
 
 	public void autonomousInit() {
-		myDrive = comp.myDrive;
-		state = 0;
+		state = -1;
+		twoCubeState = -1;
+		mirror = false;
 
-		/*
-		 * baseline = 0; centerSwitch = 0; sideScale = 0;
-		 */
+		myDrive = comp.myDrive;
+		// state = 0; //TODO: Not needed with the delay function?
+
 		resetEncoders();
 		Elevator.resetEncoders();
 		time.reset();
 		time.start();
 
+		delayHappened = false;
 		delay = SmartDashboard.getNumber("DB/Slider 0", 0);
 		if (delay > 10) {
 			delay = 10;
@@ -60,15 +61,20 @@ public class Autonomous {
 
 	// Contains the auto for crossing the baseline.
 	public static void baseline() {
-		while (time.get() < delay) {
-			myDrive.tankDrive(0, 0, false);
+		switch (state) {
+		case 0:
+			leftSetSpeed = .5;
+			rightSetSpeed = .5;
+			if (time.get() > 2) {
+				state++;
+			}
+			break;
+		case 1:
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
+			break;
 		}
-		while (time.get() < delay + 2) {
-			myDrive.tankDrive(.5, .5, false);
-		}
-		myDrive.tankDrive(0.0, 0.0, false);
 	}
-
 
 	// Contains the auto for placing a cube in the switch from the side.
 	public static void sideSwitch() {
@@ -96,7 +102,6 @@ public class Autonomous {
 			cubeOut();
 			break;
 		}
-		myDrive.tankDrive(leftSetSpeed, rightSetSpeed, false);
 	}
 
 	// Auto for starting in the center and driving straight forward to place a cube on the right side of the switch.
@@ -122,7 +127,6 @@ public class Autonomous {
 			cubeOut();
 			break;
 		}
-		myDrive.tankDrive(leftSetSpeed, rightSetSpeed, false);
 	}
 
 	// Auto for starting in the center and driving to the left to place a cube on the left side of the switch.
@@ -160,7 +164,6 @@ public class Autonomous {
 			cubeOut();
 			break;
 		}
-		myDrive.tankDrive(leftSetSpeed, rightSetSpeed, false);
 	}
 
 	// For testing anything and everything.
@@ -171,13 +174,10 @@ public class Autonomous {
 			rightSetSpeed = 0;
 			break;
 		case 0:
-			checkElevator();
+			drive(LEFT_SPEED, RIGHT_SPEED, 5000, 2);
 			break;
-		case 1:
-			cubeOut();
-			break;
+
 		}
-		// myDrive.tankDrive(leftSetSpeed, rightSetSpeed, false);
 		SmartDashboard.putString("DB/String 1", "Average: " + String.valueOf(average()));
 		SmartDashboard.putString("DB/String 2", "Difference: " + String.valueOf(difference()));
 	}
@@ -187,13 +187,76 @@ public class Autonomous {
 		baseline(); // No scale code yet so it will just do baseline.
 	}
 
+	public static void centerTwoCubes() {
+		switch (twoCubeState) {
+		default:
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
+			break;
+		case 0:
+			if (mirror) {
+				centerRightSwitch();
+			} else {
+				centerLeftSwitch();
+			}
+			break;
+		case 1:
+			state = 0;
+			twoCubeState++;
+			break;
+		case 2:
+			centerGetSecond();
+
+		}
+	}
+
+	public static void sideSwitchTwoCubes() {
+		switch (twoCubeState) {
+		default:
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
+			break;
+		case 0:
+			sideSwitch(); // Add later, for testing.
+			break;
+		case 1:
+			state = 0;
+			twoCubeState++;
+			break;
+		case 2:
+			sideSwitchGetSecond();
+			break;
+
+		}
+	}
+
+	public static void centerGetSecond() {
+
+	}
+
+	public static void sideSwitchGetSecond() {
+
+	}
+
+	// -------------------------------------------------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------------
+
+	public static void delay() {
+		if (time.get() >= delay && !delayHappened) {
+			state = 0;
+			twoCubeState = 0;
+			delayHappened = true;
+			time.reset();
+			time.start();
+		}
+	}
+
 	static int leftEncoder() {
 		return comp.actualValue(leftStart, Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn());
 	}
 
 	static int rightEncoder() {
-		return comp.actualValue(rightStart,
-				Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn());
+		return comp.actualValue(rightStart, Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn());
 	}
 
 	static int average() {
@@ -210,7 +273,7 @@ public class Autonomous {
 		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		try {
-			Thread.sleep(500);
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -288,6 +351,11 @@ public class Autonomous {
 		}
 		Intake.intakeWheels(0);
 		state++;
+		twoCubeState++;
+	}
+
+	static void cubeIn() {
+
 	}
 
 	static void checkElevator() {
