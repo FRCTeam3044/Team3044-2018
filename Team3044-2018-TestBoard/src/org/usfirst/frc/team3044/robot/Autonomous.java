@@ -355,13 +355,15 @@ public class Autonomous {
 	}
 
 	static void cubeIn() {
-		drive(0.3, 0.3, 300, 0);
-		time.reset();
-		time.start();
-		while (time.get() < 1) {
-			Intake.intakeWheels(-1);
+		leftSetSpeed = 0.3;
+		rightSetSpeed = 0.3;
+		if (average() > 300) {
+			resetEncoders();
+			time.reset();
+			time.start();
+			Intake.intakeArms(true, true);
+			Intake.intakeArms(false,  false);
 		}
-		Intake.intakeArms(false, true);
 	}
 
 	static void checkElevator() {
