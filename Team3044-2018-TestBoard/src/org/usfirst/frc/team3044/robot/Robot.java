@@ -4,6 +4,9 @@ import org.usfirst.frc.team3044.Reference.Effectors;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -33,6 +36,10 @@ public class Robot extends IterativeRobot {
 
 	// Data from the FMS about switch and scale placement.
 	String gameData;
+
+	NetworkTableEntry avg;
+	NetworkTableEntry left;
+	NetworkTableEntry right;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -64,6 +71,17 @@ public class Robot extends IterativeRobot {
 		comp.rightFrontDrive.setNeutralMode(NeutralMode.Coast);
 		comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
 		comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
+
+		NetworkTableInstance inst = NetworkTableInstance.getDefault();
+		NetworkTable table = inst.getTable("datatable");
+		avg = table.getEntry("avg");
+		left = table.getEntry("left");
+		right = table.getEntry("right");
+	}
+
+	@Override
+	public void robotPeriodic() {
+
 	}
 
 	@Override
@@ -143,12 +161,10 @@ public class Robot extends IterativeRobot {
 			if (gameData.charAt(0) == 'L') {
 				// Left auto code
 				Autonomous.centerTwoCubes();
-				;
 			} else {
 				// Right auto code
 				Autonomous.mirror = true;
 				Autonomous.centerTwoCubes();
-				;
 			}
 			break;
 
@@ -156,7 +172,6 @@ public class Robot extends IterativeRobot {
 			if (gameData.charAt(0) == 'L') {
 				// Left switch auto code
 				Autonomous.sideSwitchTwoCubes();
-				;
 			} else if (gameData.charAt(1) == 'L') {
 				// Left scale auto code
 				Autonomous.sideScale();
@@ -171,7 +186,6 @@ public class Robot extends IterativeRobot {
 			if (gameData.charAt(0) == 'R') {
 				// Right switch auto code
 				Autonomous.sideSwitchTwoCubes();
-				;
 			} else if (gameData.charAt(1) == 'R') {
 				// Right scale auto code
 				Autonomous.sideScale();
@@ -190,6 +204,10 @@ public class Robot extends IterativeRobot {
 			break;
 		}
 		comp.myDrive.tankDrive(Autonomous.leftSetSpeed, Autonomous.rightSetSpeed, false);
+
+		avg.setDouble(Autonomous.average());
+		left.setDouble(Autonomous.leftEncoder());
+		right.setDouble(Autonomous.rightEncoder());
 	}
 
 	// Initializes subsystems.
@@ -244,21 +262,21 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledInit() {
 		Autonomous.resetEncoders();
-		
-		//DON'T USE AT COMPETITION:
+
+		// TODO: DON'T USE AT COMPETITION:
 		comp.leftFrontDrive.setNeutralMode(NeutralMode.Coast);
 		comp.rightFrontDrive.setNeutralMode(NeutralMode.Coast);
 		comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
 		comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
 	}
+
 	@Override
 	public void disabledPeriodic() {
 		SmartDashboard.putString("DB/String 0", "Auto: " + String.valueOf(chooser.getSelected()));
 		SmartDashboard.putString("DB/String 5", "Delay: " + String.valueOf(SmartDashboard.getNumber("DB/Slider 0", 0)));
-		
+
 		SmartDashboard.putString("DB/String 9", "Average: " + String.valueOf(Autonomous.average()));
 		int elevatorEncoderPos = Effectors.getInstance().elevator2.getSensorCollection().getQuadraturePosition();
 		SmartDashboard.putString("DB/String 4", "elevator: " + String.valueOf(elevatorEncoderPos));
-
 	}
 }

@@ -33,9 +33,10 @@ public class Autonomous {
 	static boolean delayHappened;
 
 	static int SWITCH_HEIGHT = 18000;
-	static double LEFT_SPEED = .3;
-	static double RIGHT_SPEED = .38;
+	static double LEFT_SPEED = .35;
+	static double RIGHT_SPEED = .44;
 	static int TURN_90 = 1000; // First bot: 600
+	static int TURN_45 = 300;
 
 	public void autonomousInit() {
 		state = -1;
@@ -224,45 +225,32 @@ public class Autonomous {
 			drive(-LEFT_SPEED, -RIGHT_SPEED, 2910, 0);
 			break;
 		case 1:
-			turn(LEFT_SPEED, -LEFT_SPEED, TURN_90, 0);
+			turn(LEFT_SPEED, -LEFT_SPEED, TURN_45, 0);
 			break;
 		case 2:
-			drive(LEFT_SPEED, RIGHT_SPEED, 2800, 0);
+			drive(LEFT_SPEED, RIGHT_SPEED, 2000, 0);
 			break;
 		case 3:
-			turn(-LEFT_SPEED, LEFT_SPEED, TURN_90 - 150, 0);// TODO: Not at competition
-			break;
-		case 4:
-			// Elevator down
+			// cubeIn();
 			state++;
 			break;
+		case 4:
+			drive(-LEFT_SPEED, -RIGHT_SPEED, 2000, 0);
+			break;
 		case 5:
-			drive(LEFT_SPEED, RIGHT_SPEED, 1200, 3);
-			cubeIn();
+			turn(-LEFT_SPEED, LEFT_SPEED, TURN_45, 0);
 			break;
 		case 6:
-			drive(-LEFT_SPEED, -RIGHT_SPEED, 200, 3);
-			break;
-		case 7:
-			turn(-LEFT_SPEED, LEFT_SPEED, TURN_90 - 150, 0);// TODO: Not at competition
-			break;
-		case 8:
-			drive(LEFT_SPEED, RIGHT_SPEED, 2800, 0);
-			break;
-		case 9:
-			turn(LEFT_SPEED, -LEFT_SPEED, TURN_90 - 150, 0);// TODO: Not at competition
-			break;
-		case 10:
 			// elevatorUp();
 			state++;
 			break;
-		case 11:
-			drive(LEFT_SPEED, RIGHT_SPEED, 2300, 4);
+		case 7:
+			drive(LEFT_SPEED, RIGHT_SPEED, 3300, 3);
 			break;
-		case 12:
-			cubeOut();
+		case 8:
+			// cubeOut();
+			state++;
 			break;
-
 		}
 	}
 
@@ -305,12 +293,13 @@ public class Autonomous {
 	}
 
 	static void resetEncoders() {
-		myDrive.tankDrive(0.0, 0.0, false);
+		leftSetSpeed = 0;
+		rightSetSpeed = 0;
 		// Resets the encoders to 0.
 		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		try {
-			Thread.sleep(200);
+			Thread.sleep(400);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
