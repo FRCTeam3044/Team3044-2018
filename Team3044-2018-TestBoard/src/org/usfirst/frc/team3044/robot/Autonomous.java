@@ -33,10 +33,10 @@ public class Autonomous {
 	static boolean delayHappened;
 
 	static int SWITCH_HEIGHT = 18000;
-	static double LEFT_SPEED = .35;
-	static double RIGHT_SPEED = .44;
+	static double LEFT_SPEED = .40;
+	static double RIGHT_SPEED = .45;
 	static int TURN_90 = 1000; // First bot: 600
-	static int TURN_45 = 300;
+	static int TURN_45 = 250;
 
 	public void autonomousInit() {
 		state = -1;
@@ -113,16 +113,17 @@ public class Autonomous {
 			rightSetSpeed = 0;
 			break;
 		case 0:
-			drive(.4, .4, 3000, 0);
+			drive(LEFT_SPEED, RIGHT_SPEED, 3000, 0);
 			if (Elevator.elevatorEncoder() < SWITCH_HEIGHT) {
-				Elevator.moveElevator(-.5);
+				// Elevator.moveElevator(-.5); //TODO: Add back
 			}
 			break;
 		case 1:
-			checkElevator();
+			// checkElevator(); //TODO: Add back
+			elevatorUp();
 			break;
 		case 2:
-			drive(.3, .3, 1800, 2);
+			drive(LEFT_SPEED, RIGHT_SPEED, 1800, 2);
 			break;
 		case 3:
 			cubeOut();
@@ -138,28 +139,29 @@ public class Autonomous {
 			rightSetSpeed = 0;
 			break;
 		case 0:
-			drive(.3, .3, 1000, 0);
+			drive(LEFT_SPEED, RIGHT_SPEED, 1000, 0);
 			break;
 		case 1:
-			drive(-.3, .3, 600, 0);
+			drive(-LEFT_SPEED, LEFT_SPEED, 500, 0);
 			break;
 		case 2:
-			drive(.4, .4, 5500, 0);
+			drive(LEFT_SPEED, RIGHT_SPEED, 5000, 0);
 			break;
 		case 3:
-			drive(.3, -.3, 600, 0);
+			drive(RIGHT_SPEED, -RIGHT_SPEED, 600, 0);
 			break;
 		case 4:
-			drive(.3, .3, 1500, 0);
+			drive(LEFT_SPEED, RIGHT_SPEED, 1500, 2);
 			if (Elevator.elevatorEncoder() < SWITCH_HEIGHT) {
-				Elevator.moveElevator(-.5);
+				// Elevator.moveElevator(-.5); //TODO:Add back
 			}
 			break;
 		case 5:
-			checkElevator();
+			// checkElevator();//TODO:Add back
+			elevatorUp();
 			break;
 		case 6:
-			drive(.3, .3, 1500, 2);
+			drive(LEFT_SPEED, RIGHT_SPEED, 1500, 2);
 			break;
 		case 7:
 			cubeOut();
@@ -222,17 +224,16 @@ public class Autonomous {
 			rightSetSpeed = 0;
 			break;
 		case 0:
-			drive(-LEFT_SPEED, -RIGHT_SPEED, 2910, 0);
+			drive(-LEFT_SPEED, -RIGHT_SPEED, 2000, 0);
 			break;
 		case 1:
-			turn(LEFT_SPEED, -LEFT_SPEED, TURN_45, 0);
+			elevatorDown();
 			break;
 		case 2:
-			drive(LEFT_SPEED, RIGHT_SPEED, 2000, 0);
+			turn(RIGHT_SPEED, -RIGHT_SPEED, TURN_45, 0);
 			break;
 		case 3:
-			// cubeIn();
-			state++;
+			cubeIn();
 			break;
 		case 4:
 			drive(-LEFT_SPEED, -RIGHT_SPEED, 2000, 0);
@@ -241,15 +242,13 @@ public class Autonomous {
 			turn(-LEFT_SPEED, LEFT_SPEED, TURN_45, 0);
 			break;
 		case 6:
-			// elevatorUp();
-			state++;
+			elevatorUp();
 			break;
 		case 7:
-			drive(LEFT_SPEED, RIGHT_SPEED, 3300, 3);
+			drive(LEFT_SPEED, RIGHT_SPEED, 3500, 4);
 			break;
 		case 8:
-			// cubeOut();
-			state++;
+			cubeOut();
 			break;
 		}
 	}
@@ -261,6 +260,23 @@ public class Autonomous {
 	// For testing anything and everything.
 	public static void test() {
 		centerGetSecond();
+		/*
+		 * switch (state) {
+		 * default:
+		 * leftSetSpeed = 0;
+		 * rightSetSpeed = 0;
+		 * break;
+		 * case 0:
+		 * elevatorUp();
+		 * break;
+		 * case 1:
+		 * cubeOut();
+		 * break;
+		 * case 2:
+		 * elevatorDown();
+		 * break;
+		 * }
+		 */
 	}
 
 	// -------------------------------------------------------------------------------------------------------------------------
@@ -296,15 +312,20 @@ public class Autonomous {
 		leftSetSpeed = 0;
 		rightSetSpeed = 0;
 		// Resets the encoders to 0.
-		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
-		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
+		// Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
+		// Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
 		try {
-			Thread.sleep(400);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		leftStart = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();
 		rightStart = Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn();
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -349,11 +370,27 @@ public class Autonomous {
 	}
 
 	static void elevatorUp() {
-		time.reset();
-		time.start();
-		while (Elevator.elevatorEncoder() < 200 && time.get() < 2) {
-			myDrive.tankDrive(0.0, 0.0, false);
-			Elevator.moveElevator(-.5);
+		if (/* Elevator.elevatorEncoder() < SWITCH_HEIGHT && */ time.get() < 1.75) {
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
+			Elevator.moveElevator(-.75);
+		} else {
+			Elevator.moveElevator(0);
+			resetEncoders();
+			time.reset();
+			time.start();
+			state++;
+		}
+	}
+
+	static void elevatorDown() {
+		if (/* Elevator.elevatorEncoder() > 20 && */ time.get() < 1.5) {
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
+			Elevator.moveElevator(.75);
+		} else {
+			Elevator.moveElevator(0);
+			state++;
 		}
 	}
 
@@ -361,27 +398,43 @@ public class Autonomous {
 		time.reset();
 		time.start();
 		while (time.get() < .5) {
-			comp.wristMotor.set(-0.3);
+			comp.wristMotor.set(-0.5);
 		}
 		comp.wristMotor.set(0);
 		time.reset();
 		time.start();
-		while (time.get() < 1) {
-			Intake.intakeWheels(-1);
+		while (time.get() < .5) {
+			Intake.intakeWheels(-.25);
 		}
 		Intake.intakeArms(true, false);
 		time.reset();
 		time.start();
-		while (time.get() < 1) {
-			Intake.intakeWheels(-1);
+		while (time.get() < .2) {
+			Intake.intakeWheels(-.25);
 		}
 		Intake.intakeWheels(0);
+		time.reset();
+		time.start();
 		state++;
 		twoCubeState++;
 	}
 
 	static void cubeIn() {
-		// TODO: Write
+		if (time.get() < 2.5) {
+			Intake.intakeArms(false, true);
+			leftSetSpeed = .35;
+			rightSetSpeed = .35;
+		} else if (time.get() < 3) {
+			Intake.intakeArms(false, false);
+		} else if (time.get() < 3.2) {
+			leftSetSpeed = -.4;
+			rightSetSpeed = -.4;
+		} else {
+			Intake.intakeArms(false, false);
+			Intake.intakeWheels(0);
+			resetEncoders();
+			state++;
+		}
 	}
 
 	static void checkElevator() {

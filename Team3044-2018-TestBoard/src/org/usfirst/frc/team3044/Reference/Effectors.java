@@ -135,6 +135,9 @@ public class Effectors {
 		// Puts the elevator motors in brake mode so they stay where they are when not being used.
 		elevator1.setNeutralMode(NeutralMode.Brake);
 		elevator2.setNeutralMode(NeutralMode.Brake);
+		
+		elevator1.configNeutralDeadband(2, 10);
+		elevator2.configNeutralDeadband(2, 10);
 
 		// Sets the encoder for the elevator.
 		elevator2.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
@@ -145,6 +148,7 @@ public class Effectors {
 		armsPiston = new DoubleSolenoid(61, 0, 1);
 		wristMotor = new WPI_TalonSRX(robotSchema.canTalonMap.get("wristMotor"));
 
+		wristMotor.configNeutralDeadband(2, 10);
 		leftSweep.configNeutralDeadband(2, 10);
 		rightSweep.configNeutralDeadband(2, 10);
 
