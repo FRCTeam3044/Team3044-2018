@@ -78,7 +78,7 @@ public class Elevator {
 		// Resets the encoder to 0.
 		Effectors.getInstance().elevator2.setSelectedSensorPosition(0, 0, 0);
 		try {
-			Thread.sleep(200); // TODO: Not needed?
+			Thread.sleep(100); // TODO: Not needed?
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

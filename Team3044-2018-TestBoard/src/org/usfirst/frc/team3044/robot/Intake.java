@@ -76,11 +76,11 @@ public class Intake {
 	void wristMovement() {
 		// Pulls the intake up when the right trigger is activated.
 		if (controller.getTriggerRight()) {
-			wristMotor.set(0.7);
+			wristMotor.set(-0.7);
 		}
 		// Drops the intake down when left trigger is activated.
 		else if (controller.getTriggerLeft()) {
-			wristMotor.set(-0.3);
+			wristMotor.set(0.3);
 		} else {
 			wristMotor.set(0);
 		}

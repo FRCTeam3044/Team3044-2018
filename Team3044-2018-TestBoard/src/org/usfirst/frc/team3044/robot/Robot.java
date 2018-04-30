@@ -4,9 +4,6 @@ import org.usfirst.frc.team3044.Reference.Effectors;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -37,9 +34,9 @@ public class Robot extends IterativeRobot {
 	// Data from the FMS about switch and scale placement.
 	String gameData;
 
-	NetworkTableEntry avg;
-	NetworkTableEntry left;
-	NetworkTableEntry right;
+	/*
+	 * NetworkTableEntry avg; NetworkTableEntry left; NetworkTableEntry right;
+	 */
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -72,11 +69,12 @@ public class Robot extends IterativeRobot {
 		comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
 		comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
 
-		NetworkTableInstance inst = NetworkTableInstance.getDefault();
-		NetworkTable table = inst.getTable("datatable");
-		avg = table.getEntry("avg");
-		left = table.getEntry("left");
-		right = table.getEntry("right");
+		/*
+		 * NetworkTableInstance inst = NetworkTableInstance.getDefault();
+		 * NetworkTable table = inst.getTable("datatable"); avg =
+		 * table.getEntry("avg"); left = table.getEntry("left"); right =
+		 * table.getEntry("right");
+		 */
 	}
 
 	@Override
@@ -108,13 +106,15 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		// The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
+		// The mirror variable assumes that the robot will always go to or start
+		// on the left unless told to go to the right.
 
 		Autonomous.delay();
 
 		/*
-		 * This switch statement contains all the autonomous options. The case ran depends on which auto was chosen by the drivers.
-		 * Within each case, the game data is used to determine exactly which auto is run.
+		 * This switch statement contains all the autonomous options. The case
+		 * ran depends on which auto was chosen by the drivers. Within each
+		 * case, the game data is used to determine exactly which auto is run.
 		 */
 		switch (autoSelected) {
 
@@ -205,9 +205,11 @@ public class Robot extends IterativeRobot {
 		}
 		comp.myDrive.tankDrive(Autonomous.leftSetSpeed, Autonomous.rightSetSpeed, false);
 
-		avg.setDouble(Autonomous.average());
-		left.setDouble(Autonomous.leftEncoder());
-		right.setDouble(Autonomous.rightEncoder());
+		/*
+		 * avg.setDouble(Autonomous.average());
+		 * left.setDouble(Autonomous.leftEncoder());
+		 * right.setDouble(Autonomous.rightEncoder());
+		 */
 	}
 
 	// Initializes subsystems.
@@ -233,12 +235,18 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		// For testing encoders, will be moved to a different class.
 		/*
-		 * int leftAnalogPos = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();
-		 * SmartDashboard.putString("DB/String 2", "leftAnalogPos: " + String.valueOf(leftAnalogPos));
-		 * int rightAnalogPos = Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn();
-		 * SmartDashboard.putString("DB/String 3", "rightAnalogPos: " + String.valueOf(rightAnalogPos));
-		 * int wristEncoderPos = Effectors.getInstance().wristMotor.getSensorCollection().getAnalogIn();
-		 * SmartDashboard.putString("DB/String 4", "wristEncoderPos: " + String.valueOf(wristEncoderPos));
+		 * int leftAnalogPos =
+		 * Effectors.getInstance().leftFrontDrive.getSensorCollection().
+		 * getAnalogIn(); SmartDashboard.putString("DB/String 2",
+		 * "leftAnalogPos: " + String.valueOf(leftAnalogPos)); int
+		 * rightAnalogPos =
+		 * Effectors.getInstance().rightFrontDrive.getSensorCollection().
+		 * getAnalogIn(); SmartDashboard.putString("DB/String 3",
+		 * "rightAnalogPos: " + String.valueOf(rightAnalogPos)); int
+		 * wristEncoderPos =
+		 * Effectors.getInstance().wristMotor.getSensorCollection().getAnalogIn(
+		 * ); SmartDashboard.putString("DB/String 4", "wristEncoderPos: " +
+		 * String.valueOf(wristEncoderPos));
 		 */
 
 		int elevatorEncoderPos = Effectors.getInstance().elevator2.getSensorCollection().getQuadraturePosition();
@@ -263,11 +271,13 @@ public class Robot extends IterativeRobot {
 	public void disabledInit() {
 		Autonomous.resetEncoders();
 
-		// TODO: DON'T USE AT COMPETITION:
-		comp.leftFrontDrive.setNeutralMode(NeutralMode.Coast);
-		comp.rightFrontDrive.setNeutralMode(NeutralMode.Coast);
-		comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
-		comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
+		// DON'T USE AT COMPETITION:
+		/*
+		 * comp.leftFrontDrive.setNeutralMode(NeutralMode.Coast);
+		 * comp.rightFrontDrive.setNeutralMode(NeutralMode.Coast);
+		 * comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
+		 * comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
+		 */
 	}
 
 	@Override
