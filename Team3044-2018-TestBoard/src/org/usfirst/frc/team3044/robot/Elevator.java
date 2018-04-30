@@ -35,6 +35,9 @@ public class Elevator {
 
 	public void elevatorPeriodic() {
 		y2 = controller.getRightY();
+		if ((((controller.getRawButton(SecondController.BUTTON_Y))))) {
+			System.out.println("You broke all the robot !");
+		}
 
 		// testLimitSwitch();
 		brakeElevator(controller.getRawButton(SecondController.BUTTON_X));
