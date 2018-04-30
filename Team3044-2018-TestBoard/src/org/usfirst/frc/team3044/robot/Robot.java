@@ -34,6 +34,10 @@ public class Robot extends IterativeRobot {
 	// Data from the FMS about switch and scale placement.
 	String gameData;
 
+	/*
+	 * NetworkTableEntry avg; NetworkTableEntry left; NetworkTableEntry right;
+	 */
+
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -45,12 +49,13 @@ public class Robot extends IterativeRobot {
 		elevator.elevatorInit();
 		drive.driveInit();
 		intake.intakeInit();
+		autonomous.autonomousInit();
 
 		// Sends the auto choices to the dashboard.
 		chooser.addDefault("Start Center", startCenter);
 		chooser.addObject("Start Left", startLeft);
 		chooser.addObject("Start Right", startRight);
-		chooser.addDefault("Start Center Two Cubes", startCenterTwoCubes);
+		chooser.addObject("Start Center Two Cubes", startCenterTwoCubes);
 		chooser.addObject("Start Left Two Cubes", startLeftTwoCubes);
 		chooser.addObject("Start Right Two Cubes", startRightTwoCubes);
 		chooser.addObject("Baseline", Baseline);
@@ -63,13 +68,24 @@ public class Robot extends IterativeRobot {
 		comp.rightFrontDrive.setNeutralMode(NeutralMode.Coast);
 		comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
 		comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
+
+		/*
+		 * NetworkTableInstance inst = NetworkTableInstance.getDefault();
+		 * NetworkTable table = inst.getTable("datatable"); avg =
+		 * table.getEntry("avg"); left = table.getEntry("left"); right =
+		 * table.getEntry("right");
+		 */
+	}
+
+	@Override
+	public void robotPeriodic() {
+
 	}
 
 	@Override
 	public void autonomousInit() {
 		autonomous.autonomousInit();
-		Elevator.brakeToggle = false;
-		// TODO: Can elevator.elevatorInit(); be called twice? Here and robot or teleop init? I just want to reset the brake piston.
+		elevator.elevatorInit();
 
 		// Gets the autonomous mode that has been selected and prints it out.
 		autoSelected = chooser.getSelected();
@@ -90,13 +106,15 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		// The mirror variable assumes that the robot will always go to or start on the left unless told to go to the right.
+		// The mirror variable assumes that the robot will always go to or start
+		// on the left unless told to go to the right.
 
 		Autonomous.delay();
 
 		/*
-		 * This switch statement contains all the autonomous options. The case ran depends on which auto was chosen by the drivers.
-		 * Within each case, the game data is used to determine exactly which auto is run.
+		 * This switch statement contains all the autonomous options. The case
+		 * ran depends on which auto was chosen by the drivers. Within each
+		 * case, the game data is used to determine exactly which auto is run.
 		 */
 		switch (autoSelected) {
 
@@ -143,12 +161,10 @@ public class Robot extends IterativeRobot {
 			if (gameData.charAt(0) == 'L') {
 				// Left auto code
 				Autonomous.centerTwoCubes();
-				;
 			} else {
 				// Right auto code
 				Autonomous.mirror = true;
 				Autonomous.centerTwoCubes();
-				;
 			}
 			break;
 
@@ -156,7 +172,6 @@ public class Robot extends IterativeRobot {
 			if (gameData.charAt(0) == 'L') {
 				// Left switch auto code
 				Autonomous.sideSwitchTwoCubes();
-				;
 			} else if (gameData.charAt(1) == 'L') {
 				// Left scale auto code
 				Autonomous.sideScale();
@@ -171,7 +186,6 @@ public class Robot extends IterativeRobot {
 			if (gameData.charAt(0) == 'R') {
 				// Right switch auto code
 				Autonomous.sideSwitchTwoCubes();
-				;
 			} else if (gameData.charAt(1) == 'R') {
 				// Right scale auto code
 				Autonomous.sideScale();
@@ -190,6 +204,12 @@ public class Robot extends IterativeRobot {
 			break;
 		}
 		comp.myDrive.tankDrive(Autonomous.leftSetSpeed, Autonomous.rightSetSpeed, false);
+
+		/*
+		 * avg.setDouble(Autonomous.average());
+		 * left.setDouble(Autonomous.leftEncoder());
+		 * right.setDouble(Autonomous.rightEncoder());
+		 */
 	}
 
 	// Initializes subsystems.
@@ -215,12 +235,18 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		// For testing encoders, will be moved to a different class.
 		/*
-		 * int leftAnalogPos = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();
-		 * SmartDashboard.putString("DB/String 2", "leftAnalogPos: " + String.valueOf(leftAnalogPos));
-		 * int rightAnalogPos = Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn();
-		 * SmartDashboard.putString("DB/String 3", "rightAnalogPos: " + String.valueOf(rightAnalogPos));
-		 * int wristEncoderPos = Effectors.getInstance().wristMotor.getSensorCollection().getAnalogIn();
-		 * SmartDashboard.putString("DB/String 4", "wristEncoderPos: " + String.valueOf(wristEncoderPos));
+		 * int leftAnalogPos =
+		 * Effectors.getInstance().leftFrontDrive.getSensorCollection().
+		 * getAnalogIn(); SmartDashboard.putString("DB/String 2",
+		 * "leftAnalogPos: " + String.valueOf(leftAnalogPos)); int
+		 * rightAnalogPos =
+		 * Effectors.getInstance().rightFrontDrive.getSensorCollection().
+		 * getAnalogIn(); SmartDashboard.putString("DB/String 3",
+		 * "rightAnalogPos: " + String.valueOf(rightAnalogPos)); int
+		 * wristEncoderPos =
+		 * Effectors.getInstance().wristMotor.getSensorCollection().getAnalogIn(
+		 * ); SmartDashboard.putString("DB/String 4", "wristEncoderPos: " +
+		 * String.valueOf(wristEncoderPos));
 		 */
 
 		int elevatorEncoderPos = Effectors.getInstance().elevator2.getSensorCollection().getQuadraturePosition();
@@ -242,12 +268,25 @@ public class Robot extends IterativeRobot {
 	}
 
 	@Override
+	public void disabledInit() {
+		Autonomous.resetEncoders();
+
+		// DON'T USE AT COMPETITION:
+		/*
+		 * comp.leftFrontDrive.setNeutralMode(NeutralMode.Coast);
+		 * comp.rightFrontDrive.setNeutralMode(NeutralMode.Coast);
+		 * comp.leftBackDrive.setNeutralMode(NeutralMode.Coast);
+		 * comp.rightBackDrive.setNeutralMode(NeutralMode.Coast);
+		 */
+	}
+
+	@Override
 	public void disabledPeriodic() {
 		SmartDashboard.putString("DB/String 0", "Auto: " + String.valueOf(chooser.getSelected()));
 		SmartDashboard.putString("DB/String 5", "Delay: " + String.valueOf(SmartDashboard.getNumber("DB/Slider 0", 0)));
 
+		SmartDashboard.putString("DB/String 9", "Average: " + String.valueOf(Autonomous.average()));
 		int elevatorEncoderPos = Effectors.getInstance().elevator2.getSensorCollection().getQuadraturePosition();
 		SmartDashboard.putString("DB/String 4", "elevator: " + String.valueOf(elevatorEncoderPos));
-
 	}
 }

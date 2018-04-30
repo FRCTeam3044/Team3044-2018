@@ -28,14 +28,16 @@ public class Autonomous {
 	static int leftStart;
 	static int rightStart;
 
-	// Read from slider 0, input can only be 0-10, delays the start of any auto execution.
+	// Read from slider 0, input can only be 0-10, delays the start of any auto
+	// execution.
 	static double delay;
 	static boolean delayHappened;
 
-	static int SWITCH_HEIGHT = 18000;
-	static double LEFT_SPEED = .5;
-	static double RIGHT_SPEED = .56;
-	static int TURN_90 = 600;
+	static int SWITCH_HEIGHT = 13500;
+	static double LEFT_SPEED = .80;
+	static double RIGHT_SPEED = .80; // Practice is .08 more.
+	static int TURN_90 = 1000; // First bot: 600
+	static int TURN_45 = 150;
 
 	public void autonomousInit() {
 		state = -1;
@@ -43,7 +45,6 @@ public class Autonomous {
 		mirror = false;
 
 		myDrive = comp.myDrive;
-		// state = 0; //TODO: Not needed with the delay function?
 
 		resetEncoders();
 		Elevator.resetEncoders();
@@ -87,7 +88,7 @@ public class Autonomous {
 			drive(.4, .4, 7000, 0);
 			break;
 		case 1:
-			turn(.5, -.5, 600, 0);
+			turn(.5, -.5, 550, 0);
 			if (Elevator.elevatorEncoder() < SWITCH_HEIGHT) {
 				Elevator.moveElevator(-.5);
 			}
@@ -96,7 +97,7 @@ public class Autonomous {
 			checkElevator();
 			break;
 		case 3:
-			drive(.3, .3, 2000, 4);
+			drive(.3, .3, 2000, 2);
 			break;
 		case 4:
 			cubeOut();
@@ -104,7 +105,8 @@ public class Autonomous {
 		}
 	}
 
-	// Auto for starting in the center and driving straight forward to place a cube on the right side of the switch.
+	// Auto for starting in the center and driving straight forward to place a
+	// cube on the right side of the switch.
 	public static void centerRightSwitch() {
 		switch (state) {
 		default:
@@ -112,7 +114,7 @@ public class Autonomous {
 			rightSetSpeed = 0;
 			break;
 		case 0:
-			drive(.4, .4, 3000, 0);
+			drive(LEFT_SPEED, RIGHT_SPEED, 3000, 0);
 			if (Elevator.elevatorEncoder() < SWITCH_HEIGHT) {
 				Elevator.moveElevator(-.5);
 			}
@@ -121,7 +123,7 @@ public class Autonomous {
 			checkElevator();
 			break;
 		case 2:
-			drive(.3, .3, 1800, 2);
+			drive(LEFT_SPEED, RIGHT_SPEED, 1800, 2);
 			break;
 		case 3:
 			cubeOut();
@@ -129,7 +131,8 @@ public class Autonomous {
 		}
 	}
 
-	// Auto for starting in the center and driving to the left to place a cube on the left side of the switch.
+	// Auto for starting in the center and driving to the left to place a cube
+	// on the left side of the switch.
 	public static void centerLeftSwitch() {
 		switch (state) {
 		default:
@@ -137,19 +140,19 @@ public class Autonomous {
 			rightSetSpeed = 0;
 			break;
 		case 0:
-			drive(.3, .3, 1000, 0);
+			drive(LEFT_SPEED, RIGHT_SPEED, 250, 0); // 1000
 			break;
 		case 1:
-			drive(-.3, .3, 600, 0);
+			drive(-LEFT_SPEED, LEFT_SPEED, 400 / 2, 0);
 			break;
 		case 2:
-			drive(.4, .4, 5500, 0);
+			drive(LEFT_SPEED, RIGHT_SPEED, 4000, 0); // 4800
 			break;
 		case 3:
-			drive(.3, -.3, 600, 0);
+			drive(RIGHT_SPEED, -RIGHT_SPEED, 250 / 2, 0);
 			break;
 		case 4:
-			drive(.3, .3, 1500, 0);
+			drive(LEFT_SPEED, RIGHT_SPEED, 200, 2); // 500
 			if (Elevator.elevatorEncoder() < SWITCH_HEIGHT) {
 				Elevator.moveElevator(-.5);
 			}
@@ -158,28 +161,12 @@ public class Autonomous {
 			checkElevator();
 			break;
 		case 6:
-			drive(.3, .3, 1500, 2);
+			drive(LEFT_SPEED, RIGHT_SPEED, 200, 2); // 500
 			break;
 		case 7:
 			cubeOut();
 			break;
 		}
-	}
-
-	// For testing anything and everything.
-	public static void test() {
-		switch (state) {
-		default:
-			leftSetSpeed = 0;
-			rightSetSpeed = 0;
-			break;
-		case 0:
-			drive(LEFT_SPEED, RIGHT_SPEED, 5000, 2);
-			break;
-
-		}
-		SmartDashboard.putString("DB/String 1", "Average: " + String.valueOf(average()));
-		SmartDashboard.putString("DB/String 2", "Difference: " + String.valueOf(difference()));
 	}
 
 	// Contains the auto for placing a cube in the scale from the side.
@@ -231,17 +218,59 @@ public class Autonomous {
 	}
 
 	public static void centerGetSecond() {
-
+		switch (state) {
+		default:
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
+			break;
+		case 0:
+			drive(-LEFT_SPEED, -RIGHT_SPEED, 2000, 0);
+			break;
+		case 1:
+			elevatorDown();
+			break;
+		case 2:
+			turn(RIGHT_SPEED, -RIGHT_SPEED, TURN_45, 0);
+			break;
+		case 3:
+			cubeIn();
+			break;
+		case 4:
+			drive(-LEFT_SPEED, -RIGHT_SPEED, 2000, 0);
+			break;
+		case 5:
+			turn(-LEFT_SPEED, LEFT_SPEED, TURN_45, 0);
+			break;
+		case 6:
+			elevatorUp();
+			break;
+		case 7:
+			drive(LEFT_SPEED, RIGHT_SPEED, 3500, 4);
+			break;
+		case 8:
+			cubeOutNoWrist();
+			break;
+		}
 	}
 
 	public static void sideSwitchGetSecond() {
 
 	}
 
+	// For testing anything and everything.
+	public static void test() {
+		centerGetSecond();
+		/*
+		 * switch (state) { default: leftSetSpeed = 0; rightSetSpeed = 0; break;
+		 * case 0: elevatorUp(); break; case 1: cubeOut(); break; case 2:
+		 * elevatorDown(); break; }
+		 */
+	}
+
 	// -------------------------------------------------------------------------------------------------------------------------
 	// -------------------------------------------------------------------------------------------------------------------------
 
-	public static void delay() {
+	static void delay() {
 		if (time.get() >= delay && !delayHappened) {
 			state = 0;
 			twoCubeState = 0;
@@ -256,7 +285,8 @@ public class Autonomous {
 	}
 
 	static int rightEncoder() {
-		return comp.actualValue(rightStart, Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn());
+		return comp.actualValue(rightStart,
+				Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn());
 	}
 
 	static int average() {
@@ -268,17 +298,21 @@ public class Autonomous {
 	}
 
 	static void resetEncoders() {
-		myDrive.tankDrive(0.0, 0.0, false);
-		// Resets the encoders to 0.
-		Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0, 0, 0);
-		Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0, 0, 0);
+		leftSetSpeed = 0;
+		rightSetSpeed = 0;
+		// Resets the drive encoders to 0.
+		// Effectors.getInstance().leftFrontDrive.setSelectedSensorPosition(0,
+		// 0, 0);
+		// Effectors.getInstance().rightFrontDrive.setSelectedSensorPosition(0,
+		// 0, 0);
 		try {
-			Thread.sleep(200);
+			Thread.sleep(700);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		leftStart = Effectors.getInstance().leftFrontDrive.getSensorCollection().getAnalogIn();
 		rightStart = Effectors.getInstance().rightFrontDrive.getSensorCollection().getAnalogIn();
+
 	}
 
 	/**
@@ -292,8 +326,8 @@ public class Autonomous {
 	 * @param distance
 	 *            The encoder distance you want to travel.
 	 * @param timeout
-	 *            An optional timeout that will end the driving after the specified
-	 *            time in seconds. 0 is no timeout.
+	 *            An optional timeout that will end the driving after the
+	 *            specified time in seconds. 0 is no timeout.
 	 * 
 	 * @author Colin
 	 */
@@ -301,13 +335,18 @@ public class Autonomous {
 		leftSetSpeed = leftSpeed;
 		rightSetSpeed = rightSpeed;
 		if (average() > distance) {
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
 			resetEncoders();
 			time.reset();
 			time.start();
 			state++;
+
 		}
 		if (timeout > 0) {
 			if (time.get() >= timeout) {
+				leftSetSpeed = 0;
+				rightSetSpeed = 0;
 				resetEncoders();
 				time.reset();
 				time.start();
@@ -323,11 +362,29 @@ public class Autonomous {
 	}
 
 	static void elevatorUp() {
-		time.reset();
-		time.start();
-		while (Elevator.elevatorEncoder() < 200 && time.get() < 2) {
-			myDrive.tankDrive(0.0, 0.0, false);
-			Elevator.moveElevator(-.5);
+		if (/* Elevator.elevatorEncoder() < SWITCH_HEIGHT && */ time.get() < 1.75) {
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
+			Elevator.moveElevator(-1);
+		} else {
+			Elevator.moveElevator(0);
+			resetEncoders();
+			time.reset();
+			time.start();
+			state++;
+		}
+	}
+
+	static void elevatorDown() {
+		if (/* Elevator.elevatorEncoder() > 20 && */ time.get() < 1.5) {
+			leftSetSpeed = 0;
+			rightSetSpeed = 0;
+			Elevator.moveElevator(.75);
+		} else {
+			Elevator.moveElevator(0);
+			time.reset();
+			time.start();
+			state++;
 		}
 	}
 
@@ -335,36 +392,75 @@ public class Autonomous {
 		time.reset();
 		time.start();
 		while (time.get() < .5) {
-			comp.wristMotor.set(-0.3);
+			comp.wristMotor.set(0.5);
 		}
 		comp.wristMotor.set(0);
 		time.reset();
 		time.start();
-		while (time.get() < 1) {
-			Intake.intakeWheels(-1);
+		while (time.get() < .5) {
+			Intake.intakeWheels(-.25);
 		}
 		Intake.intakeArms(true, false);
 		time.reset();
 		time.start();
-		while (time.get() < 1) {
-			Intake.intakeWheels(-1);
+		while (time.get() < .2) {
+			Intake.intakeWheels(-.25);
 		}
 		Intake.intakeWheels(0);
+		time.reset();
+		time.start();
+		state++;
+		twoCubeState++;
+	}
+
+	static void cubeOutNoWrist() {
+		time.reset();
+		time.start();
+		while (time.get() < .5) {
+			Intake.intakeWheels(-.25);
+		}
+		Intake.intakeArms(true, false);
+		time.reset();
+		time.start();
+		while (time.get() < .2) {
+			Intake.intakeWheels(-.25);
+		}
+		Intake.intakeWheels(0);
+		time.reset();
+		time.start();
 		state++;
 		twoCubeState++;
 	}
 
 	static void cubeIn() {
-
+		if (time.get() < 1) {
+			Intake.intakeArms(false, true);
+			leftSetSpeed = .35;
+			rightSetSpeed = .43;
+		} else if (time.get() < 1.5) {
+			Intake.intakeArms(false, false);
+		} else if (time.get() < 1.7) {
+			leftSetSpeed = -.4;
+			rightSetSpeed = -.4;
+		} else {
+			Intake.intakeArms(false, false);
+			Intake.intakeWheels(0);
+			resetEncoders();
+			time.reset();
+			time.start();
+			state++;
+		}
 	}
 
 	static void checkElevator() {
 		leftSetSpeed = 0;
 		rightSetSpeed = 0;
 		if (Elevator.elevatorEncoder() < SWITCH_HEIGHT) {
-			Elevator.moveElevator(-.5);
+			Elevator.moveElevator(-1);
 		} else {
 			Elevator.moveElevator(0);
+			time.reset();
+			time.start();
 			state++;
 		}
 	}

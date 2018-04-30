@@ -45,7 +45,7 @@ public class Intake {
 	// Function to take the block in and out, values doubled to get to full power
 	// faster.
 	public static void intakeWheels(double speed) {
-		leftSweep.set(-speed * .9);
+		leftSweep.set(-speed * 1.5);
 		rightSweep.set(speed * 2);
 	}
 
@@ -65,7 +65,7 @@ public class Intake {
 		} else if (autoButton) {
 			armsPiston.set(DoubleSolenoid.Value.kReverse);
 			if (Math.abs(controller.getLeftY()) < .15) {
-				//intakeWheels(1);
+				intakeWheels(1);
 			}
 		} else {// Closes intake when not pressed.
 			armsPiston.set(DoubleSolenoid.Value.kForward);
@@ -76,11 +76,11 @@ public class Intake {
 	void wristMovement() {
 		// Pulls the intake up when the right trigger is activated.
 		if (controller.getTriggerRight()) {
-			wristMotor.set(0.7);
+			wristMotor.set(-0.7);
 		}
 		// Drops the intake down when left trigger is activated.
 		else if (controller.getTriggerLeft()) {
-			wristMotor.set(-0.3);
+			wristMotor.set(0.3);
 		} else {
 			wristMotor.set(0);
 		}
