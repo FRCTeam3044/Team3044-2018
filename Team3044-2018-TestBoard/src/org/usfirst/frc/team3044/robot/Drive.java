@@ -5,6 +5,10 @@ package org.usfirst.frc.team3044.robot;
 
 import org.usfirst.frc.team3044.Reference.*;
 
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class Drive {
@@ -13,16 +17,36 @@ public class Drive {
 
 	DifferentialDrive myDrive;
 
-	// PIDController leftPID;
-	// PIDController rightPID;
+	PIDController leftPID;
+	PIDController rightPID;
+
+	double Kp=1; 
+	double Ki=1; 
+	double Kd=1; 
+	
 
 	public void driveInit() {
 		// Calls on the WPIlib DifferentialDrive from Effectors.
 		myDrive = comp.myDrive;
-
-		// Sets up the PID Loop.
-		// leftPID = new PIDController(1, 1, 1, comp.leftFrontDrive., comp.leftFrontDrive, 50);
-		// rightPID = new PIDController(1, 1, 1, rightEncoder, comp.rightFrontDrive, 50);
+		
+		// Create PIDSource objects 
+		PIDSource leftPIDSource = new WPI_TalonPIDSource(comp.leftFrontDrive, PIDSourceType.kRate); 
+		PIDSource rightPIDSource = new WPI_TalonPIDSource(comp.rightFrontDrive, PIDSourceType.kRate); 
+		// Create PIDOutput objects 
+		PIDOutput leftPIDOutput = new WPI_TalonPIDOutput(comp.leftFrontDrive); 
+		PIDOutput rightPIDOutput =  new WPI_TalonPIDOutput (comp.rightFrontDrive); 
+		
+		// Hook up source and outputs to PIDController 
+		leftPID = new PIDController(Kp, Ki, Kd, leftPIDSource, leftPIDOutput, 50);
+		rightPID = new PIDController(Kp,Ki,Kd, rightPIDSource, rightPIDOutput, 50); 
+		
+		// Initialize setpoints to 0 
+		leftPID.setSetpoint(0); 
+		rightPID.setSetpoint(0); 
+		
+		// Start the PID loop 
+		leftPID.enable();
+		rightPID.enable();
 	}
 
 	public void drivePeriodic() {
